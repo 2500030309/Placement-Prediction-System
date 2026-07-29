@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}
+About
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<h1>About Placement Prediction System</h1>
+
+<h3>Our Vision</h3>
+
+<p>
+    The Placement Prediction System is a Machine Learning-based web application
+    developed to help students estimate their placement opportunities. By
+    analyzing academic performance, technical skills, communication ability,
+    internships, and other relevant factors, the system predicts the probability
+    of securing a placement.
+</p>
+
+<h3>Project Objectives</h3>
+
+<p>
+    The primary objective of this project is to assist students in understanding
+    their strengths and areas that require improvement before campus recruitment.
+    It also provides insights that can help students prepare more effectively
+    for placement drives.
+</p>
+
+<h3>Technologies Used</h3>
+
+<p>
+    • Python <br>
+    • Flask Framework <br>
+    • HTML5 <br>
+    • CSS3 <br>
+    • Machine Learning <br>
+    • Scikit-Learn <br>
+    • Pandas & NumPy
+</p>
+
+<h3>Benefits</h3>
+
+<p>
+    The application provides quick predictions, easy accessibility, and a
+    user-friendly interface that helps students make informed decisions regarding
+    their career preparation.
+</p>
+
+{% endblock %}
