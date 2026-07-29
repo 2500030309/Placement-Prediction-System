@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<h1>Welcome to the Placement Prediction System</h1>
+
+<h3>Your Smart Career Prediction Assistant</h3>
+
+<p>
+    The Placement Prediction System is designed to help students estimate
+    their placement opportunities based on their academic performance,
+    technical skills, and other important factors.
+</p>
+
+<p>
+    This project uses Machine Learning techniques to analyze student data
+    and predict the likelihood of getting placed in a company. It provides
+    valuable insights that can help students improve their preparation for
+    campus placements.
+</p>
+
+<p>
+    Through this application, users can enter their details, view prediction
+    results, and understand the factors that influence placement outcomes.
+    The goal is to guide students toward better career planning and skill
+    development.
+</p>
+
+<h3>Project Features</h3>
+
+<p>
+    • Student Information Entry <br>
+    • Placement Prediction using Machine Learning <br>
+    • Easy-to-Use Interface <br>
+    • Fast and Accurate Results <br>
+    • Career Guidance Support
+</p>
+
+<p>
+    We hope this system helps students gain confidence and prepare effectively
+    for their future careers.
+</p>
+
+{% endblock %}
