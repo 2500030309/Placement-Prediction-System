@@ -2,56 +2,83 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>{% block title %}Placement Prediction System{% endblock %}</title>
-
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Base Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-
+    
     {% block css %}
     {% endblock %}
-
 </head>
 
 <body>
+    <!-- Decorative Ambient Blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
 
-    <header>
-
-        <nav>
-
+    <header class="app-header">
+        <nav class="navbar">
             <div class="logo">
-                <h2>Placement Prediction</h2>
+                <a href="/">
+                    <span class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></span>
+                    <h2>Path<span>Predict</span></h2>
+                </a>
             </div>
-
-            <ul>
-
-                <li><a href="/">Home</a></li>
-                <li><a href="/predict">Prediction</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/contact">Contact</a></li>
-
+            
+            <ul class="nav-links">
+                <li><a href="/" class="{% if request.path == '/' %}active{% endif %}"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="/predict" class="{% if request.path == '/predict' %}active{% endif %}"><i class="fa-solid fa-chart-line"></i> Predictor</a></li>
+                <li><a href="/about" class="{% if request.path == '/about' %}active{% endif %}"><i class="fa-solid fa-circle-info"></i> About</a></li>
+                <li><a href="/contact" class="{% if request.path == '/contact' %}active{% endif %}"><i class="fa-solid fa-paper-plane"></i> Contact</a></li>
             </ul>
 
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
         </nav>
-
     </header>
 
-    <main>
-
+    <main class="container">
         {% block content %}
         {% endblock %}
-
     </main>
-    <footer>
 
-        <p>
-            &copy; 2026 Placement Prediction System
-        </p>
-
+    <footer class="app-footer">
+        <div class="footer-content">
+            <p>&copy; 2026 PathPredict System. Guiding careers with intelligent predictions.</p>
+            <div class="footer-links">
+                <a href="/about">About System</a>
+                <span class="separator">&bull;</span>
+                <a href="/contact">Support</a>
+            </div>
+        </div>
     </footer>
 
+    <script>
+        // Mobile Navigation Toggle
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+
+        if (mobileMenu) {
+            mobileMenu.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+        }
+    </script>
 </body>
 
 </html>

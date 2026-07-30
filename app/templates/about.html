@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-About
+About | Placement Prediction System
 {% endblock %}
 
 {% block css %}
@@ -9,46 +9,103 @@ About
 {% endblock %}
 
 {% block content %}
+<div class="section-header">
+    <h1>About PathPredict</h1>
+    <p>Empowering students to unlock their career potential using data-driven insights.</p>
+</div>
 
-<h1>About Placement Prediction System</h1>
+<section class="about-grid">
+    <div class="about-card vision-card">
+        <div class="about-icon"><i class="fa-solid fa-eye"></i></div>
+        <h2>Our Vision</h2>
+        <p>
+            The Placement Prediction System is an intelligent assessment platform designed to bridge the gap between academic preparation and industry expectations. By analyzing key performance and capability indicators, the system predicts a student's recruitment potential and outlines clear, actionable improvement paths.
+        </p>
+    </div>
 
-<h3>Our Vision</h3>
+    <div class="about-card objectives-card">
+        <div class="about-icon"><i class="fa-solid fa-bullseye"></i></div>
+        <h2>Core Objectives</h2>
+        <ul class="objectives-list">
+            <li>
+                <span class="bullet"><i class="fa-solid fa-check"></i></span>
+                <span class="text"><strong>Early Assessment:</strong> Help students evaluate their profile during their pre-final year.</span>
+            </li>
+            <li>
+                <span class="bullet"><i class="fa-solid fa-check"></i></span>
+                <span class="text"><strong>Gap Identification:</strong> Pinpoint critical soft skills or technical languages that require attention.</span>
+            </li>
+            <li>
+                <span class="bullet"><i class="fa-solid fa-check"></i></span>
+                <span class="text"><strong>Actionable Roadmap:</strong> Recommend direct actions rather than just scoring the profile.</span>
+            </li>
+        </ul>
+    </div>
+</section>
 
-<p>
-    The Placement Prediction System is a Machine Learning-based web application
-    developed to help students estimate their placement opportunities. By
-    analyzing academic performance, technical skills, communication ability,
-    internships, and other relevant factors, the system predicts the probability
-    of securing a placement.
-</p>
+<section class="pipeline-section">
+    <div class="subsection-title">
+        <h2>How The Predictive Engine Works</h2>
+        <p>A look at the underlying logical architecture of the placement system.</p>
+    </div>
+    
+    <div class="pipeline-flow">
+        <div class="pipeline-step">
+            <div class="step-num">01</div>
+            <div class="step-content">
+                <h3>Data Intake</h3>
+                <p>Captures student profiles including CGPA, programming languages, backlogs, and mock aptitude performance.</p>
+            </div>
+        </div>
+        <div class="pipeline-step">
+            <div class="step-num">02</div>
+            <div class="step-content">
+                <h3>Feature Weighting</h3>
+                <p>Calculates weighted metrics relative to historical placement datasets where CGPA, technical skills, and internships hold top priorities.</p>
+            </div>
+        </div>
+        <div class="pipeline-step">
+            <div class="step-num">03</div>
+            <div class="step-content">
+                <h3>Inference Engine</h3>
+                <p>Maps the student profile against industry standards to evaluate probability of getting placed in different corporate tiers.</p>
+            </div>
+        </div>
+        <div class="pipeline-step">
+            <div class="step-num">04</div>
+            <div class="step-content">
+                <h3>Insights Generator</h3>
+                <p>Dynamically structures personalized growth cards, highlights positive traits, and constructs specific feedback reports.</p>
+            </div>
+        </div>
+    </div>
+</section>
 
-<h3>Project Objectives</h3>
-
-<p>
-    The primary objective of this project is to assist students in understanding
-    their strengths and areas that require improvement before campus recruitment.
-    It also provides insights that can help students prepare more effectively
-    for placement drives.
-</p>
-
-<h3>Technologies Used</h3>
-
-<p>
-    • Python <br>
-    • Flask Framework <br>
-    • HTML5 <br>
-    • CSS3 <br>
-    • Machine Learning <br>
-    • Scikit-Learn <br>
-    • Pandas & NumPy
-</p>
-
-<h3>Benefits</h3>
-
-<p>
-    The application provides quick predictions, easy accessibility, and a
-    user-friendly interface that helps students make informed decisions regarding
-    their career preparation.
-</p>
-
+<section class="tech-section">
+    <div class="subsection-title">
+        <h2>Built with Modern Technologies</h2>
+    </div>
+    <div class="tech-grid">
+        <div class="tech-card">
+            <div class="tech-icon py"><i class="fa-brands fa-python"></i></div>
+            <h3>Python</h3>
+            <p>Core language for model execution and data preprocessing algorithms.</p>
+        </div>
+        <div class="tech-card">
+            <div class="tech-icon flask"><i class="fa-solid fa-server"></i></div>
+            <h3>Flask</h3>
+            <p>Micro-framework used to host the prediction web templates and API endpoints.</p>
+        </div>
+        <div class="tech-card">
+            <div class="tech-icon frontend"><i class="fa-solid fa-code"></i></div>
+            <h3>Modern HTML5 / CSS3</h3>
+            <p>Clean, structured templates styled with custom CSS variables and layouts.</p>
+        </div>
+        <div class="tech-card">
+            <div class="tech-icon js"><i class="fa-brands fa-js"></i></div>
+            <h3>Vanilla JavaScript</h3>
+            <p>Handles the interactive wizard form states and animates the placement report dashboards.</p>
+        </div>
+    </div>
+</section>
 {% endblock %}

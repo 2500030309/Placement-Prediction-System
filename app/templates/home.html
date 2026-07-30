@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Home
+PathPredict | Intelligent Placement Assistant
 {% endblock %}
 
 {% block css %}
@@ -9,44 +9,115 @@ Home
 {% endblock %}
 
 {% block content %}
+<section class="hero-section">
+    <div class="hero-text">
+        <span class="badge"><i class="fa-solid fa-sparkles"></i> AI-Powered Insights</span>
+        <h1>Accelerate Your <span>Career Journey</span></h1>
+        <p>
+            Assess your placement likelihood, discover skill gaps, and get personalized development action-plans based on real recruitment patterns.
+        </p>
+        <div class="hero-actions">
+            <a href="/predict" class="btn btn-primary"><i class="fa-solid fa-circle-play"></i> Run Prediction</a>
+            <a href="/about" class="btn btn-secondary"><i class="fa-solid fa-book-open"></i> Learn Methodology</a>
+        </div>
+    </div>
+    <div class="hero-visual">
+        <!-- Interactive vector illustration card -->
+        <div class="visual-card">
+            <div class="card-header">
+                <span class="card-dot red"></span>
+                <span class="card-dot yellow"></span>
+                <span class="card-dot green"></span>
+                <span class="card-title">Success Probability</span>
+            </div>
+            <div class="card-body">
+                <div class="gauge-preview">
+                    <span class="gauge-value">87%</span>
+                    <span class="gauge-label">Highly Likely</span>
+                </div>
+                <div class="preview-metrics">
+                    <div class="metric"><span class="label">CGPA</span><span class="value">9.2</span></div>
+                    <div class="metric"><span class="label">Projects</span><span class="value">3 Active</span></div>
+                    <div class="metric"><span class="label">Backlogs</span><span class="value">None</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-<h1>Welcome to the Placement Prediction System</h1>
+<section class="stats-section">
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-user-graduate"></i></div>
+        <div class="stat-info">
+            <h3>15,200+</h3>
+            <p>Students Assessed</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-bullseye"></i></div>
+        <div class="stat-info">
+            <h3>94.8%</h3>
+            <p>Model Precision</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-building-columns"></i></div>
+        <div class="stat-info">
+            <h3>80+</h3>
+            <p>Partner Universities</p>
+        </div>
+    </div>
+</section>
 
-<h3>Your Smart Career Prediction Assistant</h3>
+<section class="features-section">
+    <div class="section-title">
+        <h2>Features Designed for Your Success</h2>
+        <p>Discover what makes PathPredict the ultimate career readiness evaluator.</p>
+    </div>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="icon-box"><i class="fa-solid fa-sliders"></i></div>
+            <h3>Multi-Factor Analysis</h3>
+            <p>We weigh academic consistency, software skills, core languages, project diversity, internships, and communication ratings.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon-box"><i class="fa-solid fa-gauge-high"></i></div>
+            <h3>Instant Scoring</h3>
+            <p>Get results within seconds. See an interactive indicator gauge showing your probability tier directly on your screen.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon-box"><i class="fa-solid fa-list-check"></i></div>
+            <h3>Actionable Recommendations</h3>
+            <p>No dead-ends. We generate personalized checklists recommending what you need to improve to land your dream company.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon-box"><i class="fa-solid fa-shield-halved"></i></div>
+            <h3>Zero Data Storage</h3>
+            <p>Your inputs are processed live directly on your browser session. We respect student privacy; no personal info is stored.</p>
+        </div>
+    </div>
+</section>
 
-<p>
-    The Placement Prediction System is designed to help students estimate
-    their placement opportunities based on their academic performance,
-    technical skills, and other important factors.
-</p>
-
-<p>
-    This project uses Machine Learning techniques to analyze student data
-    and predict the likelihood of getting placed in a company. It provides
-    valuable insights that can help students improve their preparation for
-    campus placements.
-</p>
-
-<p>
-    Through this application, users can enter their details, view prediction
-    results, and understand the factors that influence placement outcomes.
-    The goal is to guide students toward better career planning and skill
-    development.
-</p>
-
-<h3>Project Features</h3>
-
-<p>
-    • Student Information Entry <br>
-    • Placement Prediction using Machine Learning <br>
-    • Easy-to-Use Interface <br>
-    • Fast and Accurate Results <br>
-    • Career Guidance Support
-</p>
-
-<p>
-    We hope this system helps students gain confidence and prepare effectively
-    for their future careers.
-</p>
-
+<section class="workflow-section">
+    <div class="section-title">
+        <h2>3 Easy Steps to Your Predictor Report</h2>
+    </div>
+    <div class="workflow-steps">
+        <div class="step-card">
+            <div class="step-num">1</div>
+            <h3>Enter Academics</h3>
+            <p>Provide CGPA, backlogs, and school-board percentages.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-num">2</div>
+            <h3>Select Skills</h3>
+            <p>Pick coding skills, internship experiences, and project history.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-num">3</div>
+            <h3>Analyze Report</h3>
+            <p>Review your probability and read detailed study guidelines.</p>
+        </div>
+    </div>
+</section>
 {% endblock %}

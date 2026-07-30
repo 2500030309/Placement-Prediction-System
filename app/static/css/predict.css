@@ -1,0 +1,599 @@
+/* ==========================================
+   WIZARD STEPS PROGRESS INDICATOR
+   ========================================== */
+.steps-progress {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 800px;
+    margin: 0 auto 40px;
+    padding: 0 10px;
+}
+
+.step-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 2;
+    position: relative;
+    width: 100px;
+    text-align: center;
+}
+
+.step-indicator .circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--card-bg);
+    border: 2px solid var(--border-color);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: var(--transition-normal);
+    box-shadow: var(--shadow-sm);
+}
+
+.step-indicator .label {
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: var(--transition-normal);
+}
+
+/* Connectors */
+.step-line {
+    flex: 1;
+    height: 2px;
+    background-color: var(--border-color);
+    margin-top: -24px;
+    z-index: 1;
+}
+
+/* Active & Completed States */
+.step-indicator.active .circle {
+    border-color: var(--secondary-color);
+    background-color: var(--secondary-color);
+    color: #ffffff;
+    transform: scale(1.1);
+    box-shadow: 0 0 0 6px rgba(30, 158, 126, 0.15);
+}
+
+.step-indicator.active .label {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.step-indicator.completed .circle {
+    border-color: var(--primary-color);
+    background-color: var(--primary-color);
+    color: #ffffff;
+}
+
+.step-indicator.completed .label {
+    color: var(--primary-color);
+}
+
+/* ==========================================
+   WIZARD STEP PANELS
+   ========================================== */
+.wizard-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: 40px;
+    overflow: hidden;
+}
+
+.wizard-step {
+    display: none;
+    animation: slideStep 0.4s ease forwards;
+}
+
+.wizard-step.active {
+    display: block;
+}
+
+.wizard-step h2 {
+    font-size: 26px;
+    margin-bottom: 8px;
+}
+
+.step-intro {
+    color: var(--text-muted);
+    font-size: 15px;
+    margin-bottom: 30px;
+    border-left: 3px solid var(--accent-color);
+    padding-left: 12px;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.step-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 35px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-color);
+}
+
+@keyframes slideStep {
+    from { opacity: 0; transform: translateX(15px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Custom Checkbox Grid layout */
+.checkbox-container {
+    margin-bottom: 24px;
+}
+
+.checkbox-container .section-label {
+    display: block;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 12px;
+}
+
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.chk-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-main);
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+}
+
+.chk-label input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.chk-custom {
+    width: 20px;
+    height: 20px;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    display: inline-block;
+    position: relative;
+    transition: var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.chk-label:hover input ~ .chk-custom {
+    background-color: var(--secondary-light);
+}
+
+.chk-label input:checked ~ .chk-custom {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.chk-custom::after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 6px;
+    top: 3px;
+    width: 5px;
+    height: 9px;
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.chk-label input:checked ~ .chk-custom::after {
+    display: block;
+}
+
+/* ==========================================
+   STAR RATING COMPONENT
+   ========================================== */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    font-size: 26px;
+    color: var(--border-color);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+    color: var(--accent-color);
+}
+
+/* ==========================================
+   LOADING STAGE SCREEN
+   ========================================== */
+.loading-container {
+    max-width: 500px;
+    margin: 80px auto;
+    text-align: center;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 50px 30px;
+    box-shadow: var(--shadow-lg);
+    animation: fadeIn 0.4s ease;
+}
+
+/* Custom Loader Ring Spinner */
+.loader-ring {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 24px;
+}
+
+.loader-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border: 6px solid var(--secondary-color);
+    border-radius: 50%;
+    animation: loaderSpin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: var(--secondary-color) transparent transparent transparent;
+}
+
+.loader-ring div:nth-child(1) { animation-delay: -0.45s; }
+.loader-ring div:nth-child(2) { animation-delay: -0.3s; }
+.loader-ring div:nth-child(3) { animation-delay: -0.15s; }
+
+@keyframes loaderSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-container h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.loader-progress-container {
+    width: 100%;
+    height: 6px;
+    background-color: var(--secondary-light);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.loader-progress-bar {
+    width: 10%;
+    height: 100%;
+    background-color: var(--secondary-color);
+    border-radius: 3px;
+    transition: width 0.8s ease-out;
+}
+
+/* ==========================================
+   RESULTS DASHBOARD GRID
+   ========================================== */
+.dashboard-grid {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 40px;
+    align-items: flex-start;
+}
+
+.dash-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 40px;
+    box-shadow: var(--shadow-md);
+}
+
+/* Probability Gauge Panel (Left) */
+.probability-card {
+    flex: 0.9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.probability-card h2 {
+    font-size: 20px;
+    margin-bottom: 24px;
+    color: var(--primary-color);
+}
+
+.gauge-container {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    margin-bottom: 30px;
+}
+
+.gauge-ring {
+    transform: rotate(-90deg);
+}
+
+.gauge-bg {
+    fill: none;
+    stroke: var(--secondary-light);
+    stroke-width: 14;
+}
+
+.gauge-fill {
+    fill: none;
+    stroke: var(--secondary-color);
+    stroke-width: 14;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1.5s cubic-bezier(0.1, 1, 0.1, 1);
+}
+
+.gauge-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.gauge-number {
+    font-family: 'Outfit', sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+.gauge-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Placement Readiness Tiers */
+.placement-tier-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+}
+
+.tier-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+/* Tier Color Variations */
+.tier-1 { background-color: #e6f9f0; color: #1b855b; border: 1px solid rgba(27, 133, 91, 0.2); }
+.tier-1 .gauge-fill { stroke: #1b855b; }
+.tier-2 { background-color: #e8f5f1; color: #1e9e7e; border: 1px solid rgba(30, 158, 126, 0.2); }
+.tier-2 .gauge-fill { stroke: #1e9e7e; }
+.tier-3 { background-color: #fdf5e6; color: #dca134; border: 1px solid rgba(220, 161, 52, 0.2); }
+.tier-3 .gauge-fill { stroke: #dca134; }
+.tier-4 { background-color: #fdf0f0; color: #d9534f; border: 1px solid rgba(217, 83, 79, 0.2); }
+.tier-4 .gauge-fill { stroke: #d9534f; }
+
+/* Details & Feedback Tabs Panel (Right) */
+.details-card {
+    flex: 1.1;
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+}
+
+.tabs-header {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+}
+
+.tab-btn {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 18px;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tab-btn:hover {
+    background-color: var(--secondary-light);
+    color: var(--primary-color);
+}
+
+.tab-btn.active {
+    background-color: var(--primary-color);
+    color: #ffffff;
+}
+
+.tab-content {
+    display: none;
+    flex: 1;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Feedbacks Grid lists */
+.audit-section {
+    margin-bottom: 24px;
+}
+
+.audit-section h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.text-success { color: var(--secondary-color); }
+.text-danger { color: #d9534f; }
+
+.feedback-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.feedback-list li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--text-muted);
+}
+
+.feedback-list li .bullet {
+    font-size: 13px;
+    margin-top: 1px;
+}
+
+/* Roadmap Checklists Style */
+.roadmap-intro {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.roadmap-checklist {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.roadmap-item {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    transition: var(--transition-fast);
+}
+
+.roadmap-item:hover {
+    background-color: #ffffff;
+    border-color: var(--secondary-color);
+}
+
+.roadmap-chk-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-main);
+    line-height: 1.4;
+    user-select: none;
+}
+
+.roadmap-chk-label input {
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+}
+
+.roadmap-chk-label input:checked ~ .text {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.dashboard-actions {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* ==========================================
+   MEDIA QUERIES
+   ========================================== */
+@media (max-width: 992px) {
+    .dashboard-grid {
+        flex-direction: column;
+    }
+
+    .probability-card,
+    .details-card {
+        width: 100%;
+        flex: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .wizard-container {
+        padding: 24px 16px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .checkbox-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .step-line {
+        margin-top: -24px;
+    }
+}

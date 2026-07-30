@@ -1,0 +1,616 @@
+{% extends "base.html" %}
+
+{% block title %}
+Predictor | Placement Prediction System
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/predict.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="section-header" id="pageHeader">
+    <h1>Placement Predictor</h1>
+    <p>Complete the profile assessment wizard to evaluate your campus placement preparedness.</p>
+</div>
+
+<!-- Progress Steps Indicator -->
+<div class="steps-progress" id="stepsIndicator">
+    <div class="step-indicator active" data-step="1">
+        <span class="circle"><i class="fa-solid fa-user-graduate"></i></span>
+        <span class="label">Academics</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-indicator" data-step="2">
+        <span class="circle"><i class="fa-solid fa-laptop-code"></i></span>
+        <span class="label">Practical Skills</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-indicator" data-step="3">
+        <span class="circle"><i class="fa-solid fa-chart-simple"></i></span>
+        <span class="label">Aptitude & Soft Skills</span>
+    </div>
+</div>
+
+<!-- Main Wizard Container -->
+<div class="wizard-container" id="formWizard">
+    <form id="predictForm" onsubmit="runPredictionModel(event)">
+        
+        <!-- STEP 1: ACADEMIC DETAILS -->
+        <div class="wizard-step active" id="step-1">
+            <h2>Academic Achievements</h2>
+            <p class="step-intro">Enter your scoring aggregates. Accuracy here is crucial for reliable prediction weighting.</p>
+            
+            <div class="input-group">
+                <label for="cgpa">Current CGPA (0.0 - 10.0)</label>
+                <input type="number" id="cgpa" min="0" max="10" step="0.01" required placeholder="e.g. 8.45">
+            </div>
+
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="tenth">10th Grade Percentage</label>
+                    <input type="number" id="tenth" min="30" max="100" step="0.1" required placeholder="e.g. 88.5">
+                </div>
+                <div class="input-group">
+                    <label for="twelfth">12th Grade Percentage / Diploma</label>
+                    <input type="number" id="twelfth" min="30" max="100" step="0.1" required placeholder="e.g. 82.4">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="backlogs">Active Backlogs</label>
+                <select id="backlogs" required>
+                    <option value="0">No Active Backlogs</option>
+                    <option value="1">1 Active Backlog</option>
+                    <option value="2">2 or More Active Backlogs</option>
+                </select>
+            </div>
+
+            <div class="step-buttons">
+                <div></div> <!-- Spacer -->
+                <button type="button" class="btn btn-primary" onclick="goToStep(2)">
+                    Next: Practical Skills <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 2: SKILLS AND EXPERIENCE -->
+        <div class="wizard-step" id="step-2">
+            <h2>Practical Skills & Experience</h2>
+            <p class="step-intro">Highlight your internships, projects, and coding stacks.</p>
+
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="internships">Number of Internships Completed</label>
+                    <input type="number" id="internships" min="0" max="5" default="0" required placeholder="e.g. 1">
+                </div>
+                <div class="input-group">
+                    <label for="projects">Technical Projects Completed</label>
+                    <input type="number" id="projects" min="0" max="10" default="0" required placeholder="e.g. 2">
+                </div>
+            </div>
+
+            <div class="checkbox-container">
+                <label class="section-label">Programming Languages (Select all that apply)</label>
+                <div class="checkbox-grid">
+                    <label class="chk-label">
+                        <input type="checkbox" name="lang" value="Python">
+                        <span class="chk-custom"></span> Python
+                    </label>
+                    <label class="chk-label">
+                        <input type="checkbox" name="lang" value="Java">
+                        <span class="chk-custom"></span> Java
+                    </label>
+                    <label class="chk-label">
+                        <input type="checkbox" name="lang" value="C++">
+                        <span class="chk-custom"></span> C++
+                    </label>
+                    <label class="chk-label">
+                        <input type="checkbox" name="lang" value="JavaScript">
+                        <span class="chk-custom"></span> JavaScript
+                    </label>
+                    <label class="chk-label">
+                        <input type="checkbox" name="lang" value="SQL">
+                        <span class="chk-custom"></span> SQL / Database
+                    </label>
+                </div>
+            </div>
+
+            <div class="checkbox-container">
+                <label class="section-label">Domain Expertise (Select all that apply)</label>
+                <div class="checkbox-grid">
+                    <label class="chk-label">
+                        <input type="checkbox" name="domain" value="WebDev">
+                        <span class="chk-custom"></span> Web Development
+                    </label>
+                    <label class="chk-label">
+                        <input type="checkbox" name="domain" value="ML">
+                        <span class="chk-custom"></span> Machine Learning / AI
+                    </label>
+                    <label class="chk-label">
+                        <input type="checkbox" name="domain" value="Cloud">
+                        <span class="chk-custom"></span> Cloud Computing
+                    </label>
+                    <label class="chk-label">
+                        <input type="checkbox" name="domain" value="Mobile">
+                        <span class="chk-custom"></span> Mobile Development
+                    </label>
+                </div>
+            </div>
+
+            <div class="step-buttons">
+                <button type="button" class="btn btn-secondary" onclick="goToStep(1)">
+                    <i class="fa-solid fa-chevron-left"></i> Previous
+                </button>
+                <button type="button" class="btn btn-primary" onclick="goToStep(3)">
+                    Next: Evaluation <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 3: APTITUDE & BEHAVIORAL -->
+        <div class="wizard-step" id="step-3">
+            <h2>Aptitude & Soft Skills</h2>
+            <p class="step-intro">Provide self-evaluation inputs for aptitude and communication skills.</p>
+
+            <div class="input-group">
+                <label for="aptitude">Mock Aptitude Test Score (%)</label>
+                <input type="number" id="aptitude" min="0" max="100" required placeholder="e.g. 75">
+            </div>
+
+            <div class="input-group">
+                <label for="communication">Communication Skills (1 - 5 Stars)</label>
+                <div class="star-rating">
+                    <input type="radio" name="commRating" id="star5" value="5"><label for="star5" title="Excellent"><i class="fa-solid fa-star"></i></label>
+                    <input type="radio" name="commRating" id="star4" value="4"><label for="star4" title="Good"><i class="fa-solid fa-star"></i></label>
+                    <input type="radio" name="commRating" id="star3" value="3" checked><label for="star3" title="Average"><i class="fa-solid fa-star"></i></label>
+                    <input type="radio" name="commRating" id="star2" value="2"><label for="star2" title="Below Average"><i class="fa-solid fa-star"></i></label>
+                    <input type="radio" name="commRating" id="star1" value="1"><label for="star1" title="Poor"><i class="fa-solid fa-star"></i></label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label class="chk-label">
+                    <input type="checkbox" id="extracurricular">
+                    <span class="chk-custom"></span> Active in Extracurriculars / Leadership roles
+                </label>
+            </div>
+
+            <div class="step-buttons">
+                <button type="button" class="btn btn-secondary" onclick="goToStep(2)">
+                    <i class="fa-solid fa-chevron-left"></i> Previous
+                </button>
+                <button type="submit" class="btn btn-primary btn-run">
+                    <i class="fa-solid fa-gears"></i> Calculate Probability
+                </button>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<!-- Loading Engine State Screen -->
+<div class="loading-container hidden" id="loadingScreen">
+    <div class="loader-ring">
+        <div></div><div></div><div></div><div></div>
+    </div>
+    <h2 id="loaderMessage">Analyzing profile details...</h2>
+    <div class="loader-progress-container">
+        <div class="loader-progress-bar" id="loaderBar"></div>
+    </div>
+</div>
+
+<!-- Results Dashboard Grid -->
+<div class="dashboard-grid hidden" id="resultsDashboard">
+    <!-- Probability Card (Left) -->
+    <div class="dash-card probability-card">
+        <h2>Readiness Rating</h2>
+        
+        <div class="gauge-container">
+            <svg class="gauge-ring" width="220" height="220">
+                <circle class="gauge-bg" cx="110" cy="110" r="95"></circle>
+                <circle class="gauge-fill" id="dashboardGauge" cx="110" cy="110" r="95" stroke-dasharray="596" stroke-dashoffset="596"></circle>
+            </svg>
+            <div class="gauge-center">
+                <span class="gauge-number" id="resultPercentage">0%</span>
+                <span class="gauge-sub">Placement Likelihood</span>
+            </div>
+        </div>
+
+        <div class="placement-tier-badge" id="tierBadge">
+            <span class="tier-icon" id="tierIcon"><i class="fa-solid fa-award"></i></span>
+            <span class="tier-name" id="tierName">Evaluating...</span>
+        </div>
+        <p class="tier-desc" id="tierDescription"></p>
+    </div>
+
+    <!-- Strengths, Weaknesses, & Tips (Right) -->
+    <div class="dash-card details-card">
+        <div class="tabs-header">
+            <button class="tab-btn active" onclick="switchTab('strengths')"><i class="fa-solid fa-circle-check"></i> Profile Audit</button>
+            <button class="tab-btn" onclick="switchTab('roadmap')"><i class="fa-solid fa-map"></i> Growth Plan</button>
+        </div>
+        
+        <div class="tab-content active" id="tab-strengths">
+            <div class="audit-section">
+                <h3><i class="fa-solid fa-plus-circle text-success"></i> Key Strengths</h3>
+                <ul class="feedback-list" id="strengthsList">
+                    <!-- Dynamic -->
+                </ul>
+            </div>
+            <div class="audit-section">
+                <h3><i class="fa-solid fa-minus-circle text-danger"></i> Areas of Concern</h3>
+                <ul class="feedback-list" id="concernsList">
+                    <!-- Dynamic -->
+                </ul>
+            </div>
+        </div>
+
+        <div class="tab-content" id="tab-roadmap">
+            <h3><i class="fa-solid fa-list-check"></i> Actionable Roadmap</h3>
+            <p class="roadmap-intro">Complete these targeted milestones to maximize your recruitability index.</p>
+            <ul class="roadmap-checklist" id="roadmapList">
+                <!-- Dynamic -->
+            </ul>
+        </div>
+
+        <div class="dashboard-actions">
+            <button class="btn btn-secondary" onclick="resetPredictor()"><i class="fa-solid fa-rotate-left"></i> Run Another Assessment</button>
+        </div>
+    </div>
+</div>
+
+<!-- Client-side logic for interactive Predict page -->
+<script>
+    let currentStep = 1;
+
+    // Navigation between steps
+    function goToStep(step) {
+        if (step > currentStep) {
+            // Validate current step before advancing
+            if (!validateStep(currentStep)) return;
+        }
+
+        // Hide current step, show target step
+        document.getElementById(`step-${currentStep}`).classList.remove('active');
+        document.getElementById(`step-${step}`).classList.add('active');
+
+        // Update step indicator classes
+        const indicators = document.querySelectorAll('.step-indicator');
+        indicators.forEach(ind => {
+            const indStep = parseInt(ind.getAttribute('data-step'));
+            if (indStep === step) {
+                ind.classList.add('active');
+            } else if (indStep < step) {
+                ind.classList.add('completed');
+                ind.classList.remove('active');
+            } else {
+                ind.classList.remove('active', 'completed');
+            }
+        });
+
+        currentStep = step;
+    }
+
+    // Basic required validation on inputs
+    function validateStep(step) {
+        const activeStepEl = document.getElementById(`step-${step}`);
+        const inputs = activeStepEl.querySelectorAll('input[required], select[required]');
+        
+        let valid = true;
+        inputs.forEach(input => {
+            if (!input.checkValidity()) {
+                input.reportValidity();
+                valid = false;
+            }
+        });
+        return valid;
+    }
+
+    // Prediction calculation algorithm
+    function runPredictionModel(event) {
+        event.preventDefault();
+        
+        // Hide wizard header and elements
+        document.getElementById('formWizard').classList.add('hidden');
+        document.getElementById('stepsIndicator').classList.add('hidden');
+        
+        // Show loading screen
+        const loadingScreen = document.getElementById('loadingScreen');
+        loadingScreen.classList.remove('hidden');
+        
+        const loaderMessage = document.getElementById('loaderMessage');
+        const loaderBar = document.getElementById('loaderBar');
+        
+        // Loader states/animations simulation
+        const messages = [
+            { text: "Auditing academic performance...", time: 0, width: "30%" },
+            { text: "Parsing technology checkboxes & projects...", time: 1000, width: "65%" },
+            { text: "Running profile matching inference...", time: 2000, width: "95%" }
+        ];
+
+        messages.forEach(msg => {
+            setTimeout(() => {
+                loaderMessage.textContent = msg.text;
+                loaderBar.style.width = msg.width;
+            }, msg.time);
+        });
+
+        // Compute results
+        setTimeout(() => {
+            // Fetch inputs
+            const cgpa = parseFloat(document.getElementById('cgpa').value) || 0;
+            const tenth = parseFloat(document.getElementById('tenth').value) || 0;
+            const twelfth = parseFloat(document.getElementById('twelfth').value) || 0;
+            const backlogs = parseInt(document.getElementById('backlogs').value) || 0;
+            const internships = parseInt(document.getElementById('internships').value) || 0;
+            const projects = parseInt(document.getElementById('projects').value) || 0;
+            const languagesCount = document.querySelectorAll('input[name="lang"]:checked').length;
+            const domainCount = document.querySelectorAll('input[name="domain"]:checked').length;
+            const aptitude = parseInt(document.getElementById('aptitude').value) || 0;
+            const extra = document.getElementById('extracurricular').checked;
+            
+            // Communication Rating check
+            const commCheckedEl = document.querySelector('input[name="commRating"]:checked');
+            const communication = commCheckedEl ? parseInt(commCheckedEl.value) : 3;
+
+            // Score Heuristics Math
+            let score = 0;
+            
+            // Academic contribution (max 35)
+            if (cgpa >= 9.0) score += 35;
+            else if (cgpa >= 8.0) score += 30;
+            else if (cgpa >= 7.0) score += 22;
+            else if (cgpa >= 6.0) score += 12;
+            else score += 5;
+
+            // Practical experience (max 15)
+            if (internships >= 2) score += 15;
+            else if (internships == 1) score += 10;
+
+            // Project contribution (max 12)
+            if (projects >= 3) score += 12;
+            else if (projects == 2) score += 10;
+            else if (projects == 1) score += 5;
+
+            // Languages & Domains check (max 15)
+            score += (languagesCount >= 2) ? 7 : (languagesCount === 1 ? 3 : 0);
+            score += (domainCount >= 2) ? 8 : (domainCount === 1 ? 4 : 0);
+
+            // Aptitude Test weight (max 13)
+            if (aptitude >= 80) score += 13;
+            else if (aptitude >= 60) score += 9;
+            else if (aptitude >= 40) score += 5;
+            else score += 2;
+
+            // Communication Skills weight (max 10)
+            if (communication === 5) score += 10;
+            else if (communication === 4) score += 8;
+            else if (communication === 3) score += 5;
+            else score += 2;
+
+            // Extracurriculars contribution (max 5)
+            if (extra) score += 5;
+
+            // Backlogs penalty
+            if (backlogs === 1) score -= 12;
+            else if (backlogs >= 2) score -= 30;
+
+            // Normalize score
+            score = Math.max(4, Math.min(99, score));
+            
+            // Compile Profile Strengths & Weaknesses
+            const strengths = [];
+            const concerns = [];
+            const roadmap = [];
+
+            // Core Academics
+            if (cgpa >= 8.5) {
+                strengths.push("Excellent CGPA structure indicating consistent academic diligence.");
+            } else if (cgpa >= 7.0) {
+                strengths.push("Satisfactory academic performance meeting minimum filters for most companies.");
+            } else {
+                concerns.push("Below-average CGPA. Many premium organizations filter out candidates below 7.0 or 7.5.");
+                roadmap.push("Prioritize upcoming semester exams to boost your cumulative CGPA close to or above 7.5.");
+            }
+
+            // Backlogs
+            if (backlogs === 0) {
+                strengths.push("Clear academic record with zero outstanding backlogs.");
+            } else {
+                concerns.push("Active backlog(s) detected. Top-tier companies restrict applicants with pending backlogs.");
+                roadmap.push("Clear all active backlogs immediately before the recruitment season begins.");
+            }
+
+            // Internships
+            if (internships > 0) {
+                strengths.push(`Valuable industry exposure with ${internships} completed internship(s).`);
+            } else {
+                concerns.push("No corporate internship experience. Practical industry exposure is missing.");
+                roadmap.push("Apply for corporate virtual internships, startup internships, or contribute to open-source codebases.");
+            }
+
+            // Projects
+            if (projects >= 2) {
+                strengths.push("Good project portfolio, showcasing problem-solving and software application skills.");
+            } else {
+                concerns.push("Limited project portfolio. Recruiter interviews heavily rely on project discussions.");
+                roadmap.push("Develop at least two major projects using popular stacks (like Python/ML or JS Full-Stack) and host them on GitHub.");
+            }
+
+            // Tech Stack
+            if (languagesCount >= 2 && domainCount >= 1) {
+                strengths.push("Broad language stack paired with targeted domain expertise.");
+            } else if (languagesCount === 0) {
+                concerns.push("No core programming languages selected. Essential software engineering basics are required.");
+                roadmap.push("Pick one primary language (Java, C++, or Python) and master Object-Oriented Programming (OOP) concepts.");
+            }
+
+            // Aptitude
+            if (aptitude >= 75) {
+                strengths.push("Excellent quantitative and logical aptitude scores. Ready for early-stage screening rounds.");
+            } else {
+                concerns.push("Sub-optimal aptitude test scoring. Aptitude assessments are the primary filter in campus recruitment.");
+                roadmap.push("Dedicate 1 hour daily to practice quantitative, logical reasoning, and verbal aptitude tests online.");
+            }
+
+            // Soft Skills
+            if (communication >= 4) {
+                strengths.push("Good interpersonal skills, essential for passing the final HR/Managerial panel interviews.");
+            } else {
+                concerns.push("Communication rated below average. Can impact performance in Group Discussions and interviews.");
+                roadmap.push("Practice speaking in English with peers, record mock video answers, or attend communication workshops.");
+            }
+
+            // Fallback for roadmap if student is already outstanding
+            if (roadmap.length === 0) {
+                roadmap.push("Profile is highly competitive. Focus on advanced Data Structures, System Design, and mock coding rounds.");
+            }
+
+            // Render Dashboard details
+            renderDashboard(score, strengths, concerns, roadmap);
+        }, 2800);
+    }
+
+    function renderDashboard(percentage, strengths, concerns, roadmap) {
+        // Hide loader, show dashboard
+        document.getElementById('loadingScreen').classList.add('hidden');
+        document.getElementById('resultsDashboard').classList.remove('hidden');
+        document.getElementById('pageHeader').classList.add('hidden');
+
+        // Animate gauge ring progress
+        const gauge = document.getElementById('dashboardGauge');
+        const percentageText = document.getElementById('resultPercentage');
+        
+        // SVG circumference = 2 * PI * r = 2 * 3.14159 * 95 = ~596.9
+        const strokeDashOffset = 596 - (596 * percentage) / 100;
+        
+        // Smoothly animate count
+        let count = 0;
+        const speed = Math.max(10, Math.round(1500 / percentage));
+        const interval = setInterval(() => {
+            if (count >= percentage) {
+                clearInterval(interval);
+            } else {
+                count++;
+                percentageText.textContent = `${count}%`;
+            }
+        }, speed);
+
+        setTimeout(() => {
+            gauge.style.strokeDashoffset = strokeDashOffset;
+        }, 100);
+
+        // Tier Determination
+        const tierBadge = document.getElementById('tierBadge');
+        const tierIcon = document.getElementById('tierIcon');
+        const tierName = document.getElementById('tierName');
+        const tierDesc = document.getElementById('tierDescription');
+
+        if (percentage >= 80) {
+            tierBadge.className = "placement-tier-badge tier-1";
+            tierIcon.innerHTML = '<i class="fa-solid fa-trophy"></i>';
+            tierName.textContent = "Tier 1: Elite Product / FAANG Candidate";
+            tierDesc.textContent = "Your profile is exceptionally strong. You exceed requirements for major tech multinationals, product companies, and research roles. Keep polishing advanced concepts.";
+        } else if (percentage >= 65) {
+            tierBadge.className = "placement-tier-badge tier-2";
+            tierIcon.innerHTML = '<i class="fa-solid fa-medal"></i>';
+            tierName.textContent = "Tier 2: Premium MNC / FinTech Match";
+            tierDesc.textContent = "You are in a great position. Your skills and academic records align with premium service providers, consulting firms, and mid-sized product companies.";
+        } else if (percentage >= 45) {
+            tierBadge.className = "placement-tier-badge tier-3";
+            tierIcon.innerHTML = '<i class="fa-solid fa-award"></i>';
+            tierName.textContent = "Tier 3: Core Technology Specialist";
+            tierDesc.textContent = "You are eligible for standard campus placement drives, but will face competition. Boosting your projects or aptitude scores will unlock higher-paying tiers.";
+        } else {
+            tierBadge.className = "placement-tier-badge tier-4";
+            tierIcon.innerHTML = '<i class="fa-solid fa-graduation-cap"></i>';
+            tierName.textContent = "Tier 4: Needs Up-skilling Support";
+            tierDesc.textContent = "Your profile requires immediate preparation adjustments. Focus on clearing backlogs, raising academic metrics, or building projects to boost placement chances.";
+        }
+
+        // Render Strengths
+        const strengthsList = document.getElementById('strengthsList');
+        strengthsList.innerHTML = "";
+        strengths.forEach(str => {
+            strengthsList.innerHTML += `<li><span class="bullet"><i class="fa-solid fa-circle-check text-success"></i></span><span class="text">${str}</span></li>`;
+        });
+
+        // Render Concerns
+        const concernsList = document.getElementById('concernsList');
+        concernsList.innerHTML = "";
+        if (concerns.length === 0) {
+            concernsList.innerHTML = `<li><span class="bullet"><i class="fa-solid fa-face-smile text-success"></i></span><span class="text">No critical warnings found! Keep up the good work.</span></li>`;
+        } else {
+            concerns.forEach(con => {
+                concernsList.innerHTML += `<li><span class="bullet"><i class="fa-solid fa-circle-xmark text-danger"></i></span><span class="text">${con}</span></li>`;
+            });
+        }
+
+        // Render Roadmap Checklist
+        const roadmapList = document.getElementById('roadmapList');
+        roadmapList.innerHTML = "";
+        roadmap.forEach((step, idx) => {
+            roadmapList.innerHTML += `
+                <li class="roadmap-item">
+                    <label class="roadmap-chk-label">
+                        <input type="checkbox" id="step-task-${idx}">
+                        <span class="chk-custom"></span>
+                        <span class="text">${step}</span>
+                    </label>
+                </li>
+            `;
+        });
+
+        // Switch to the first tab by default
+        switchTab('strengths');
+    }
+
+    // Switch between Dashboard Tabs
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+        if (tab === 'strengths') {
+            document.querySelector('.tab-btn[onclick="switchTab(\'strengths\')"]').classList.add('active');
+            document.getElementById('tab-strengths').classList.add('active');
+        } else if (tab === 'roadmap') {
+            document.querySelector('.tab-btn[onclick="switchTab(\'roadmap\')"]').classList.add('active');
+            document.getElementById('tab-roadmap').classList.add('active');
+        }
+    }
+
+    // Reset everything back to form inputs
+    function resetPredictor() {
+        // Reset form values
+        document.getElementById('predictForm').reset();
+        
+        // Reset steps variables
+        currentStep = 1;
+        
+        // Show wizard steps and indicators
+        document.getElementById('formWizard').classList.remove('hidden');
+        document.getElementById('stepsIndicator').classList.remove('hidden');
+        document.getElementById('pageHeader').classList.remove('hidden');
+        
+        // Hide dashboard & loader
+        document.getElementById('resultsDashboard').classList.add('hidden');
+        document.getElementById('loadingScreen').classList.add('hidden');
+
+        // Reset step state styling
+        const indicators = document.querySelectorAll('.step-indicator');
+        indicators.forEach((ind, idx) => {
+            ind.classList.remove('active', 'completed');
+            if (idx === 0) ind.classList.add('active');
+        });
+
+        // Go to first step visually
+        document.querySelectorAll('.wizard-step').forEach(step => step.classList.remove('active'));
+        document.getElementById('step-1').classList.add('active');
+        
+        // Reset gauge svg attribute
+        document.getElementById('dashboardGauge').style.strokeDashoffset = 596;
+        document.getElementById('resultPercentage').textContent = "0%";
+    }
+</script>
+{% endblock %}

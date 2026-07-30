@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Contact
+Contact | Placement Prediction System
 {% endblock %}
 
 {% block css %}
@@ -9,36 +9,123 @@ Contact
 {% endblock %}
 
 {% block content %}
+<div class="section-header">
+    <h1>Connect With Us</h1>
+    <p>Have questions, feedback, or need support? Drop us a line and we'll reply shortly.</p>
+</div>
 
-<h1>Contact Us</h1>
+<div class="contact-container">
+    <!-- Contact Info Cards (Left Side) -->
+    <div class="info-sidebar">
+        <div class="info-card">
+            <div class="info-icon"><i class="fa-solid fa-envelope"></i></div>
+            <div class="info-details">
+                <h3>Direct Email</h3>
+                <a href="mailto:diddisai799@gmail.com">diddisai799@gmail.com</a>
+            </div>
+        </div>
 
-<h3>We'd Love to Hear From You</h3>
+        <div class="info-card">
+            <div class="info-icon"><i class="fa-brands fa-instagram"></i></div>
+            <div class="info-details">
+                <h3>Instagram</h3>
+                <a href="https://instagram.com/diddisai_2408" target="_blank">@diddisai_2408</a>
+            </div>
+        </div>
 
-<p>
-    If you have any questions, suggestions, or feedback regarding the Placement
-    Prediction System, feel free to contact us using the information below.
-</p>
+        <div class="info-card">
+            <div class="info-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+            <div class="info-details">
+                <h3>University Address</h3>
+                <p>
+                    Department of Computer Science & Engineering<br>
+                    KL University<br>
+                    Andhra Pradesh, India
+                </p>
+            </div>
+        </div>
+    </div>
 
-<p>
+    <!-- Contact Form (Right Side) -->
+    <div class="form-wrapper">
+        <form id="contactForm" onsubmit="handleContactSubmit(event)">
+            <h2>Send a Message</h2>
+            
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" required placeholder="Enter your full name">
+                </div>
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required placeholder="Enter your email">
+                </div>
+            </div>
 
+            <div class="input-group">
+                <label for="subject">Topic of Interest</label>
+                <select id="subject" required>
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="General Question">General Inquiry</option>
+                    <option value="Model Feedback">Model Feedback</option>
+                    <option value="Technical Issue">Technical Support</option>
+                    <option value="Partnership">University/College Queries</option>
+                </select>
+            </div>
 
-<strong>Gmail :</strong> diddisai799@gmail.com <br>
+            <div class="input-group">
+                <label for="message">Your Message</label>
+                <textarea id="message" rows="5" required placeholder="How can we help you?"></textarea>
+            </div>
 
-    <strong>Instagram :</strong> @diddisai_2408 <br>
+            <button type="submit" class="btn btn-primary btn-submit">
+                <i class="fa-solid fa-paper-plane"></i> Send Message
+            </button>
+        </form>
 
+        <!-- Dynamic Success Feedback Banner -->
+        <div id="successBanner" class="success-banner hidden">
+            <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="success-text">
+                <h3>Message Sent Successfully!</h3>
+                <p>Thank you for reaching out. Our development team has received your message and will respond shortly.</p>
+                <button onclick="resetContactForm()" class="btn btn-secondary btn-sm">Send Another Message</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-<strong>Address :</strong>Department of Computer Science and Engineering <br>
-KL UNIVERSITY <br>
-Andhra Pradesh, India
+<script>
+    function handleContactSubmit(event) {
+        event.preventDefault();
+        
+        const submitBtn = document.querySelector('.btn-submit');
+        const form = document.getElementById('contactForm');
+        const banner = document.getElementById('successBanner');
+        
+        // Show loading state on button
+        submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
+        submitBtn.style.pointerEvents = 'none';
+        
+        // Simulate sending process (1.2s)
+        setTimeout(() => {
+            form.classList.add('hidden');
+            banner.classList.remove('hidden');
+            banner.classList.add('fade-in');
+            
+            // Re-enable button
+            submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Message';
+            submitBtn.style.pointerEvents = 'auto';
+        }, 1200);
+    }
 
-</p>
-
-<h3>Project Support</h3>
-
-<p>
-    For technical issues, feature requests, or general inquiries, please contact
-    our development team. We appreciate your valuable feedback and will respond
-    as soon as possible.
-</p>
-
+    function resetContactForm() {
+        const form = document.getElementById('contactForm');
+        const banner = document.getElementById('successBanner');
+        
+        form.reset();
+        banner.classList.add('hidden');
+        form.classList.remove('hidden');
+    }
+</script>
 {% endblock %}
