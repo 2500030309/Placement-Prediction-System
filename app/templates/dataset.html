@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dataset Explorer | Placement Prediction System
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dataset.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <h1>Dataset Explorer</h1>
+    <p>Explore the historical placement records and features used to train the PathPredict engine.</p>
+</div>
+
+<section class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-hashtag"></i></div>
+        <div class="stat-info">
+            <h3>{{ summary.rows }}</h3>
+            <p>Total Records (Rows)</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-columns"></i></div>
+        <div class="stat-info">
+            <h3>{{ summary.columns }}</h3>
+            <p>Features (Columns)</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-bullseye"></i></div>
+        <div class="stat-info">
+            <h3>{{ summary.target }}</h3>
+            <p>Target Attribute</p>
+        </div>
+    </div>
+</section>
+
+<section class="preview-section">
+    <div class="subsection-title">
+        <h2>Dataset Sample (First 5 Rows)</h2>
+        <p>A scrollable preview showing the column variables and data distributions.</p>
+    </div>
+    
+    <div class="table-container">
+        {{ first_rows | safe }}
+    </div>
+</section>
+{% endblock %}

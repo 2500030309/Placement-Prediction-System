@@ -1,0 +1,166 @@
+/* ==========================================
+   DATASET EXPLORER STYLES
+   ========================================== */
+
+/* Page Header Spacing */
+.section-header {
+    text-align: center;
+    padding: 40px 0 30px;
+    max-width: 800px;
+    margin: 0 auto 40px;
+}
+
+.section-header h1 {
+    font-size: 42px;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.section-header p {
+    font-size: 16px;
+    color: var(--text-muted);
+}
+
+/* Stats Grid & Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 50px;
+}
+
+.stat-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 30px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    background-color: var(--secondary-light);
+    color: var(--secondary-color);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.stat-info h3 {
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 4px;
+    color: var(--primary-color);
+}
+
+.stat-info p {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Preview Section & Table */
+.preview-section {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 40px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 60px;
+}
+
+.subsection-title {
+    text-align: left;
+    margin-bottom: 24px;
+}
+
+.subsection-title h2 {
+    font-size: 24px;
+    margin-bottom: 6px;
+}
+
+.subsection-title p {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    background: #ffffff;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.02);
+}
+
+/* Custom Scrollbars */
+.table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: var(--bg-color);
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: rgba(30, 158, 126, 0.25);
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
+/* Table Tag styles rendered by pandas */
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    text-align: left;
+}
+
+.table-container th {
+    background-color: var(--secondary-light);
+    color: var(--primary-color);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    padding: 16px 20px;
+    border-bottom: 2px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.table-container td {
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(30, 158, 126, 0.08);
+    color: var(--text-main);
+    white-space: nowrap;
+}
+
+.table-container tr:last-child td {
+    border-bottom: none;
+}
+
+.table-container tr:nth-child(even) {
+    background-color: rgba(232, 245, 241, 0.2);
+}
+
+.table-container tr:hover {
+    background-color: rgba(232, 245, 241, 0.45);
+    transition: background-color 0.15s ease-in-out;
+}
