@@ -5,18 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Placement Prediction System{% endblock %}</title>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Base Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-    
+
     {% block css %}
     {% endblock %}
 </head>
@@ -35,12 +37,18 @@
                     <h2>Path<span>Predict</span></h2>
                 </a>
             </div>
-            
+
             <ul class="nav-links">
-                <li><a href="/" class="{% if request.path == '/' %}active{% endif %}"><i class="fa-solid fa-house"></i> Home</a></li>
-                <li><a href="/predict" class="{% if request.path == '/predict' %}active{% endif %}"><i class="fa-solid fa-chart-line"></i> Predictor</a></li>
-                <li><a href="/about" class="{% if request.path == '/about' %}active{% endif %}"><i class="fa-solid fa-circle-info"></i> About</a></li>
-                <li><a href="/contact" class="{% if request.path == '/contact' %}active{% endif %}"><i class="fa-solid fa-paper-plane"></i> Contact</a></li>
+                <li><a href="/" class="{% if request.path == '/' %}active{% endif %}"><i class="fa-solid fa-house"></i>
+                        Home</a></li>
+                <li><a href="/predict" class="{% if request.path == '/predict' %}active{% endif %}"><i
+                            class="fa-solid fa-chart-line"></i> Predictor</a></li>
+                <li><a href="/dataset" class="{% if request.path == '/dataset' %}active{% endif %}"><i
+                            class="fa-solid fa-database"></i> Dataset</a></li>
+                <li><a href="/about" class="{% if request.path == '/about' %}active{% endif %}"><i
+                            class="fa-solid fa-circle-info"></i> About</a></li>
+                <li><a href="/contact" class="{% if request.path == '/contact' %}active{% endif %}"><i
+                            class="fa-solid fa-paper-plane"></i> Contact</a></li>
             </ul>
 
             <div class="menu-toggle" id="mobile-menu">
