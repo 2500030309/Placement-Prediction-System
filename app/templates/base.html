@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
@@ -18,6 +18,16 @@
 
     <!-- Base Stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+
+    <script>
+        // Apply theme immediately on head render to prevent flash of wrong theme
+        (function() {
+            const savedTheme = localStorage.getItem('pathpredict-theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 
     {% block css %}
     {% endblock %}
@@ -38,23 +48,32 @@
                 </a>
             </div>
 
-            <ul class="nav-links">
-                <li><a href="/" class="{% if request.path == '/' %}active{% endif %}"><i class="fa-solid fa-house"></i>
-                        Home</a></li>
-                <li><a href="/predict" class="{% if request.path == '/predict' %}active{% endif %}"><i
-                            class="fa-solid fa-chart-line"></i> Predictor</a></li>
-                <li><a href="/dataset" class="{% if request.path == '/dataset' %}active{% endif %}"><i
-                            class="fa-solid fa-database"></i> Dataset</a></li>
-                <li><a href="/about" class="{% if request.path == '/about' %}active{% endif %}"><i
-                            class="fa-solid fa-circle-info"></i> About</a></li>
-                <li><a href="/contact" class="{% if request.path == '/contact' %}active{% endif %}"><i
-                            class="fa-solid fa-paper-plane"></i> Contact</a></li>
-            </ul>
+            <div class="nav-right">
+                <ul class="nav-links">
+                    <li><a href="/" class="{% if request.path == '/' %}active{% endif %}"><i class="fa-solid fa-house"></i>
+                            Home</a></li>
+                    <li><a href="/predict" class="{% if request.path == '/predict' %}active{% endif %}"><i
+                                class="fa-solid fa-chart-line"></i> Predictor</a></li>
+                    <li><a href="/dataset" class="{% if request.path == '/dataset' %}active{% endif %}"><i
+                                class="fa-solid fa-database"></i> Dataset</a></li>
+                    <li><a href="/eda" class="{% if request.path == '/eda' %}active{% endif %}"><i
+                                class="fa-solid fa-chart-pie"></i> EDA Analytics</a></li>
+                    <li><a href="/about" class="{% if request.path == '/about' %}active{% endif %}"><i
+                                class="fa-solid fa-circle-info"></i> About</a></li>
+                    <li><a href="/contact" class="{% if request.path == '/contact' %}active{% endif %}"><i
+                                class="fa-solid fa-paper-plane"></i> Contact</a></li>
+                </ul>
 
-            <div class="menu-toggle" id="mobile-menu">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
+                <!-- Dark / Light Mode Toggle Button -->
+                <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle Theme" title="Switch Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+
+                <div class="menu-toggle" id="mobile-menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
             </div>
         </nav>
     </header>
@@ -84,6 +103,36 @@
             mobileMenu.addEventListener('click', () => {
                 mobileMenu.classList.toggle('active');
                 navLinks.classList.toggle('active');
+            });
+        }
+
+        // Night / Day Mode Toggle Logic
+        const themeBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = themeBtn ? themeBtn.querySelector('i') : null;
+
+        function updateThemeIcon(theme) {
+            if (!themeIcon) return;
+            if (theme === 'dark') {
+                themeIcon.className = 'fa-solid fa-sun';
+                themeBtn.setAttribute('title', 'Switch to Day Mode');
+            } else {
+                themeIcon.className = 'fa-solid fa-moon';
+                themeBtn.setAttribute('title', 'Switch to Night Mode');
+            }
+        }
+
+        // Initial icon update
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        updateThemeIcon(currentTheme);
+
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                const activeTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('pathpredict-theme', newTheme);
+                updateThemeIcon(newTheme);
             });
         }
     </script>

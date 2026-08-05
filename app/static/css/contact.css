@@ -1,140 +1,83 @@
-
 /* ==========================================
-   CONTACT CONTAINER
+   CONTACT PAGE STYLES
    ========================================== */
+
 .contact-container {
-    display: flex;
+    display: grid;
+    grid-template-columns: 360px 1fr;
     gap: 40px;
-    align-items: flex-start;
-    margin-bottom: 40px;
+    margin-bottom: 70px;
 }
 
-/* Sidebar Columns (Left) */
 .info-sidebar {
-    flex: 0.8;
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
 .info-card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    border: var(--glass-border);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
     border-radius: var(--radius-md);
-    padding: 24px;
+    padding: 28px 24px;
     display: flex;
-    align-items: center;
-    gap: 20px;
-    box-shadow: var(--shadow-sm);
+    align-items: flex-start;
+    gap: 18px;
+    box-shadow: var(--glass-shadow);
     transition: var(--transition-normal);
 }
 
 .info-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
-    border-color: rgba(30, 158, 126, 0.3);
+    transform: translateY(-4px);
+    border-color: var(--secondary-color);
 }
 
 .info-icon {
-    width: 52px;
-    height: 52px;
-    background-color: var(--secondary-light);
+    width: 48px;
+    height: 48px;
+    background: var(--secondary-light);
     color: var(--secondary-color);
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-size: 20px;
     flex-shrink: 0;
 }
 
 .info-details h3 {
-    font-size: 16px;
-    margin-bottom: 4px;
-    color: var(--primary-color);
+    font-size: 18px;
+    margin-bottom: 6px;
+    color: var(--text-main);
 }
 
-.info-details a, 
-.info-details p {
+.info-details a, .info-details p {
     font-size: 14px;
     color: var(--text-muted);
     line-height: 1.5;
 }
 
 .info-details a:hover {
-    color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
-/* ==========================================
-   FORM WRAPPER & INPUTS
-   ========================================== */
+/* Form Wrapper */
 .form-wrapper {
-    flex: 1.2;
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    border: var(--glass-border);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
     border-radius: var(--radius-md);
     padding: 40px;
-    box-shadow: var(--shadow-md);
-    position: relative;
-    overflow: hidden;
+    box-shadow: var(--glass-shadow);
 }
 
-.form-wrapper form h2 {
-    font-size: 24px;
+.form-wrapper h2 {
+    font-size: 28px;
     margin-bottom: 24px;
-}
-
-.form-row {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-.input-group {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 20px;
-}
-
-.form-row .input-group {
-    margin-bottom: 0;
-}
-
-.input-group label {
-    font-family: 'Outfit', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--primary-color);
-}
-
-.input-group input,
-.input-group select,
-.input-group textarea {
-    font-family: 'Inter', sans-serif;
-    font-size: 15px;
-    padding: 12px 16px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    background-color: var(--bg-color);
     color: var(--text-main);
-    transition: var(--transition-fast);
-    outline: none;
-    width: 100%;
-}
-
-.input-group input::placeholder,
-.input-group textarea::placeholder {
-    color: #92a4a0;
-}
-
-.input-group input:focus,
-.input-group select:focus,
-.input-group textarea:focus {
-    border-color: var(--secondary-color);
-    background-color: #ffffff;
-    box-shadow: 0 0 0 4px rgba(30, 158, 126, 0.1);
 }
 
 .btn-submit {
@@ -142,85 +85,36 @@
     margin-top: 10px;
 }
 
-/* ==========================================
-   SUCCESS FEEDBACK BANNER
-   ========================================== */
+/* Success Banner */
 .success-banner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background: var(--secondary-light);
+    border: 1px solid var(--secondary-color);
+    border-radius: var(--radius-sm);
+    padding: 30px;
     text-align: center;
-    padding: 20px 10px;
+    margin-top: 20px;
 }
 
 .success-icon {
-    width: 72px;
-    height: 72px;
-    background-color: #e6f9f0;
-    color: #1e9e7e;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 36px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 15px rgba(30, 158, 126, 0.15);
+    font-size: 48px;
+    color: var(--secondary-color);
+    margin-bottom: 14px;
 }
 
 .success-text h3 {
     font-size: 22px;
-    margin-bottom: 12px;
-    color: var(--primary-color);
+    margin-bottom: 8px;
+    color: var(--text-main);
 }
 
 .success-text p {
     color: var(--text-muted);
     font-size: 15px;
-    line-height: 1.6;
-    margin-bottom: 24px;
-    max-width: 440px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-bottom: 20px;
 }
 
-/* UTILITY CLASSES */
-.hidden {
-    display: none !important;
-}
-
-.fade-in {
-    animation: fadeIn 0.5s ease forwards;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* ==========================================
-   MEDIA QUERIES
-   ========================================== */
-@media (max-width: 992px) {
+@media (max-width: 850px) {
     .contact-container {
-        flex-direction: column;
-        gap: 30px;
-    }
-
-    .info-sidebar {
-        width: 100%;
-        flex: none;
-    }
-
-    .form-wrapper {
-        width: 100%;
-        flex: none;
-        padding: 30px 24px;
+        grid-template-columns: 1fr;
     }
 }
-
-@media (max-width: 768px) {
-    .form-row {
-        flex-direction: column;
-        gap: 20px;
-    }
-}

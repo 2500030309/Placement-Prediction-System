@@ -1,6 +1,5 @@
-
 /* ==========================================
-   HERO SECTION
+   HERO SECTION & GLASSMORPHISM
    ========================================== */
 .hero-section {
     display: flex;
@@ -20,14 +19,14 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 14px;
-    background-color: var(--secondary-light);
-    color: var(--primary-color);
+    padding: 6px 16px;
+    background: var(--secondary-light);
+    color: var(--secondary-color);
     border-radius: 100px;
     font-size: 13px;
     font-weight: 600;
     margin-bottom: 20px;
-    border: 1px solid rgba(30, 158, 126, 0.2);
+    border: var(--glass-border);
 }
 
 .hero-text h1 {
@@ -35,10 +34,11 @@
     line-height: 1.15;
     margin-bottom: 20px;
     letter-spacing: -1px;
+    color: var(--text-main);
 }
 
 .hero-text h1 span {
-    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -63,16 +63,16 @@
     align-items: center;
 }
 
-/* ==========================================
-   HERO PREVIEW CARD (VISUAL)
-   ========================================== */
+/* Hero Preview Card */
 .visual-card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    border: var(--glass-border);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
     border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--glass-shadow);
     width: 320px;
-    padding: 20px;
+    padding: 24px;
     transform: rotate(3deg);
     animation: visualFloat 6s infinite alternate ease-in-out;
 }
@@ -80,8 +80,8 @@
 .visual-card .card-header {
     display: flex;
     align-items: center;
-    gap: 6px;
-    border-bottom: 1px solid var(--border-color);
+    gap: 8px;
+    border-bottom: var(--glass-border);
     padding-bottom: 12px;
     margin-bottom: 16px;
 }
@@ -104,111 +104,90 @@
     margin-left: 6px;
 }
 
-.visual-card .card-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-}
-
 .gauge-preview {
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    border: 10px solid var(--secondary-light);
-    border-top: 10px solid var(--secondary-color);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    animation: spinGauge 2s ease-out;
+    text-align: center;
+    margin: 16px 0;
 }
 
 .gauge-value {
-    font-family: 'Outfit', sans-serif;
-    font-size: 32px;
+    display: block;
+    font-size: 48px;
     font-weight: 800;
-    color: var(--primary-color);
+    font-family: 'Outfit', sans-serif;
+    color: var(--secondary-color);
 }
 
 .gauge-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--secondary-color);
-    margin-top: -2px;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .preview-metrics {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.preview-metrics .metric {
     display: flex;
     justify-content: space-between;
-    font-size: 13px;
-    padding: 6px 10px;
-    background-color: var(--bg-color);
-    border-radius: var(--radius-sm);
+    border-top: var(--glass-border);
+    padding-top: 14px;
+    margin-top: 14px;
 }
 
-.preview-metrics .metric .label {
+.metric {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.metric .label {
+    font-size: 11px;
     color: var(--text-muted);
 }
 
-.preview-metrics .metric .value {
-    font-weight: 600;
-    color: var(--primary-color);
+.metric .value {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-main);
 }
 
 @keyframes visualFloat {
-    0% { transform: translateY(0) rotate(3deg); }
-    100% { transform: translateY(-15px) rotate(1deg); }
+    0% { transform: rotate(3deg) translateY(0); }
+    100% { transform: rotate(1deg) translateY(-14px); }
 }
 
-@keyframes spinGauge {
-    from { transform: rotate(-90deg); }
-    to { transform: rotate(0); }
-}
-
-/* ==========================================
-   STATS SECTION
-   ========================================== */
+/* Stats Section */
 .stats-section {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 24px;
     margin-bottom: 80px;
 }
 
 .stat-card {
-    flex: 1;
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    border: var(--glass-border);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
     border-radius: var(--radius-md);
-    padding: 24px;
+    padding: 28px 24px;
     display: flex;
     align-items: center;
     gap: 20px;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--glass-shadow);
     transition: var(--transition-normal);
 }
 
 .stat-card:hover {
     transform: translateY(-5px);
-    box-shadow: var(--shadow-md);
-    border-color: rgba(30, 158, 126, 0.3);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--secondary-color);
 }
 
 .stat-icon {
-    width: 52px;
-    height: 52px;
-    border-radius: 12px;
-    background-color: var(--secondary-light);
+    width: 60px;
+    height: 60px;
+    background: var(--secondary-light);
     color: var(--secondary-color);
+    border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -216,18 +195,17 @@
 }
 
 .stat-info h3 {
-    font-size: 28px;
-    margin-bottom: 2px;
+    font-size: 32px;
+    color: var(--text-main);
+    line-height: 1.2;
 }
 
 .stat-info p {
-    font-size: 14px;
     color: var(--text-muted);
+    font-size: 14px;
 }
 
-/* ==========================================
-   FEATURES SECTION
-   ========================================== */
+/* Features Grid */
 .features-section {
     margin-bottom: 80px;
 }
@@ -239,41 +217,44 @@
 
 .section-title h2 {
     font-size: 36px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
+    color: var(--text-main);
 }
 
 .section-title p {
     color: var(--text-muted);
-    font-size: 17px;
+    font-size: 16px;
 }
 
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 24px;
 }
 
 .feature-card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    border: var(--glass-border);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
     border-radius: var(--radius-md);
-    padding: 32px;
+    padding: 32px 24px;
+    box-shadow: var(--glass-shadow);
     transition: var(--transition-normal);
-    box-shadow: var(--shadow-sm);
 }
 
 .feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-md);
-    border-color: rgba(30, 158, 126, 0.3);
+    transform: translateY(-6px);
+    border-color: var(--secondary-color);
+    box-shadow: var(--shadow-lg);
 }
 
 .icon-box {
-    width: 48px;
-    height: 48px;
-    border-radius: 10px;
-    background-color: var(--accent-light);
-    color: var(--accent-color);
+    width: 50px;
+    height: 50px;
+    background: var(--secondary-light);
+    color: var(--secondary-color);
+    border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -284,57 +265,62 @@
 .feature-card h3 {
     font-size: 20px;
     margin-bottom: 12px;
+    color: var(--text-main);
 }
 
 .feature-card p {
     color: var(--text-muted);
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.6;
 }
 
-/* ==========================================
-   WORKFLOW SECTION
-   ========================================== */
+/* Workflow Section */
 .workflow-section {
-    margin-bottom: 40px;
+    margin-bottom: 60px;
 }
 
 .workflow-steps {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 24px;
 }
 
 .step-card {
-    flex: 1;
-    text-align: center;
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    border: var(--glass-border);
+    backdrop-filter: var(--glass-backdrop);
+    -webkit-backdrop-filter: var(--glass-backdrop);
     border-radius: var(--radius-md);
-    padding: 36px 24px;
+    padding: 32px 24px;
     position: relative;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--glass-shadow);
+    transition: var(--transition-normal);
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--secondary-color);
 }
 
 .step-num {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: #ffffff;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Outfit', sans-serif;
     font-weight: 700;
-    font-size: 18px;
-    margin: 0 auto 20px;
-    box-shadow: 0 4px 10px rgba(27, 77, 62, 0.25);
+    font-family: 'Outfit', sans-serif;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
 }
 
 .step-card h3 {
-    font-size: 18px;
+    font-size: 20px;
     margin-bottom: 10px;
+    color: var(--text-main);
 }
 
 .step-card p {
@@ -342,42 +328,15 @@
     font-size: 14px;
 }
 
-/* ==========================================
-   MEDIA QUERIES
-   ========================================== */
-@media (max-width: 992px) {
+@media (max-width: 900px) {
     .hero-section {
         flex-direction: column;
         text-align: center;
-        gap: 40px;
-        padding-bottom: 40px;
     }
-
-    .hero-text h1 {
-        font-size: 44px;
-    }
-
     .hero-actions {
         justify-content: center;
     }
-
-    .stats-section {
-        flex-direction: column;
-        gap: 16px;
-    }
-    
-    .workflow-steps {
-        flex-direction: column;
-        gap: 16px;
+    .hero-text h1 {
+        font-size: 40px;
     }
 }
-
-@media (max-width: 768px) {
-    .features-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .hero-text h1 {
-        font-size: 36px;
-    }
-}

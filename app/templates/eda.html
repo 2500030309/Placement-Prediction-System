@@ -1,16 +1,258 @@
 {% extends "base.html" %}
 
 {% block title %}
-About | Placement Prediction System
+EDA Visualizations | Placement Prediction System
 {% endblock %}
 
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/eda.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="section-header" id="pageHeader">
-    <h1>Explorative Data Analysis</h1>
-    <p>Exploratory Data Analysis (EDA) is the process of exploring, summarizing, and visualizing datasets to understand
-        their structure, detect patterns, identify anomalies, and prepare them for deeper statistical. </p>
+<div class="section-header">
+    <h1>Exploratory Data Analysis (EDA)</h1>
+    <p>Visualizing patterns, distributions, and feature correlations from historical placement data.</p>
 </div>
+
+<!-- Stats Summary Row -->
+<section class="stats-grid" style="margin-bottom: 30px;">
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-chart-pie"></i></div>
+        <div class="stat-info">
+            <h3>6 Key Charts</h3>
+            <p>Target, Uni, Bi & Multivariate</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-database"></i></div>
+        <div class="stat-info">
+            <h3>{{ summary.rows }} Records</h3>
+            <p>Dataset Sample Size</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-bullseye"></i></div>
+        <div class="stat-info">
+            <h3>{{ summary.target }}</h3>
+            <p>Target Outcome Variable</p>
+        </div>
+    </div>
+</section>
+
+<!-- Category Filter Buttons -->
+<div class="filter-bar">
+    <button class="filter-btn active" onclick="filterCategory('all')">
+        <i class="fa-solid fa-layer-group"></i> All Charts
+    </button>
+    <button class="filter-btn" onclick="filterCategory('target')">
+        <i class="fa-solid fa-bullseye"></i> Target Variable
+    </button>
+    <button class="filter-btn" onclick="filterCategory('univariate')">
+        <i class="fa-solid fa-chart-column"></i> Univariate Analysis
+    </button>
+    <button class="filter-btn" onclick="filterCategory('bivariate')">
+        <i class="fa-solid fa-chart-line"></i> Bivariate Analysis
+    </button>
+    <button class="filter-btn" onclick="filterCategory('multivariate')">
+        <i class="fa-solid fa-table-cells"></i> Multivariate Heatmap
+    </button>
+</div>
+
+<!-- Charts Grid Showcase -->
+<div class="charts-grid" id="chartsGrid">
+    
+    <!-- 1. Placement Prediction Bar Chart -->
+    <div class="chart-card" data-category="target">
+        <div class="chart-header">
+            <div class="chart-title-group">
+                <h3>Target Class Distribution</h3>
+            </div>
+            <span class="chart-type-tag">Target Variable</span>
+        </div>
+        <div class="chart-image-container" onclick="openLightbox('{{ url_for('static', filename='charts/Placement Prediction.png') }}', 'Target Class Distribution', 'Placement Status frequency bar plot across recorded students.')">
+            <img src="{{ url_for('static', filename='charts/Placement Prediction.png') }}" alt="Placement Status Distribution">
+            <div class="image-overlay-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Expand</div>
+        </div>
+        <div class="chart-body">
+            <p class="chart-description">
+                Illustrates the distribution of placed vs. non-placed students in the training dataset, highlighting the baseline class balance.
+            </p>
+            <div class="key-takeaway">
+                <strong>Key Insight:</strong> Balanced target distribution ensures model training won't skew heavily towards false positive classifications.
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. CGPA Histogram -->
+    <div class="chart-card" data-category="univariate">
+        <div class="chart-header">
+            <div class="chart-title-group">
+                <h3>CGPA Distribution Histogram</h3>
+            </div>
+            <span class="chart-type-tag">Univariate</span>
+        </div>
+        <div class="chart-image-container" onclick="openLightbox('{{ url_for('static', filename='charts/Histogram of CGPA.png') }}', 'Histogram of CGPA', 'Frequency distribution of student CGPA values across 10 bins.')">
+            <img src="{{ url_for('static', filename='charts/Histogram of CGPA.png') }}" alt="Histogram of CGPA">
+            <div class="image-overlay-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Expand</div>
+        </div>
+        <div class="chart-body">
+            <p class="chart-description">
+                Displays the density distribution of academic CGPA scores across the student cohort to assess variance and central tendencies.
+            </p>
+            <div class="key-takeaway">
+                <strong>Key Insight:</strong> CGPA follows a normal distribution centered around 7.0 - 8.5, indicating healthy academic data variance.
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Gender Pie Chart -->
+    <div class="chart-card" data-category="univariate">
+        <div class="chart-header">
+            <div class="chart-title-group">
+                <h3>Gender Distribution</h3>
+            </div>
+            <span class="chart-type-tag">Univariate</span>
+        </div>
+        <div class="chart-image-container" onclick="openLightbox('{{ url_for('static', filename='charts/Gender Piechart.png') }}', 'Gender Distribution Pie Chart', 'Proportional percentage split between male and female candidates.')">
+            <img src="{{ url_for('static', filename='charts/Gender Piechart.png') }}" alt="Gender Distribution Pie Chart">
+            <div class="image-overlay-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Expand</div>
+        </div>
+        <div class="chart-body">
+            <p class="chart-description">
+                Represents demographic proportions within the sample population, validating dataset diversity and gender ratio balance.
+            </p>
+            <div class="key-takeaway">
+                <strong>Key Insight:</strong> Shows equal representation across demographics, removing demographic bias during predictive feature selection.
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. CGPA vs Aptitude Score -->
+    <div class="chart-card" data-category="bivariate">
+        <div class="chart-header">
+            <div class="chart-title-group">
+                <h3>CGPA vs Aptitude Test Score</h3>
+            </div>
+            <span class="chart-type-tag">Bivariate</span>
+        </div>
+        <div class="chart-image-container" onclick="openLightbox('{{ url_for('static', filename='charts/CGPA vs APTITUDE.png') }}', 'CGPA vs Aptitude Test Score', 'Scatter plot mapping academic standing against aptitude exam capability.')">
+            <img src="{{ url_for('static', filename='charts/CGPA vs APTITUDE.png') }}" alt="CGPA vs Aptitude Test Score">
+            <div class="image-overlay-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Expand</div>
+        </div>
+        <div class="chart-body">
+            <p class="chart-description">
+                Maps the correlation between academic consistency (CGPA) and problem-solving performance on aptitude assessments.
+            </p>
+            <div class="key-takeaway">
+                <strong>Key Insight:</strong> High academic performers generally show strong aptitude results, proving complementary predictive signals.
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. CGPA vs Placement Box Plot -->
+    <div class="chart-card" data-category="bivariate">
+        <div class="chart-header">
+            <div class="chart-title-group">
+                <h3>CGPA Impact on Placement</h3>
+            </div>
+            <span class="chart-type-tag">Bivariate</span>
+        </div>
+        <div class="chart-image-container" onclick="openLightbox('{{ url_for('static', filename='charts/CGPA vs PLACEMENT.png') }}', 'CGPA vs Placement Status', 'Box plot comparing median CGPA and interquartile range for placed vs non-placed groups.')">
+            <img src="{{ url_for('static', filename='charts/CGPA vs PLACEMENT.png') }}" alt="CGPA vs Placement Box Plot">
+            <div class="image-overlay-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Expand</div>
+        </div>
+        <div class="chart-body">
+            <p class="chart-description">
+                Compares the median CGPA and interquartile ranges between candidates who secured job offers versus those who did not.
+            </p>
+            <div class="key-takeaway">
+                <strong>Key Insight:</strong> Placed candidates display a significantly higher median CGPA (> 8.0) compared to non-placed peers.
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. Correlation Heatmap -->
+    <div class="chart-card" data-category="multivariate">
+        <div class="chart-header">
+            <div class="chart-title-group">
+                <h3>Feature Correlation Heatmap</h3>
+            </div>
+            <span class="chart-type-tag">Multivariate</span>
+        </div>
+        <div class="chart-image-container" onclick="openLightbox('{{ url_for('static', filename='charts/HEATMAP.png') }}', 'Correlation Heatmap', 'Seaborn annotated matrix demonstrating correlation coefficients among numerical features.')">
+            <img src="{{ url_for('static', filename='charts/HEATMAP.png') }}" alt="Correlation Heatmap">
+            <div class="image-overlay-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Expand</div>
+        </div>
+        <div class="chart-body">
+            <p class="chart-description">
+                Seaborn correlation matrix quantifying statistical relationships between CGPA, Aptitude Test Scores, and Placement outcome.
+            </p>
+            <div class="key-takeaway">
+                <strong>Key Insight:</strong> Strong positive correlation between academic CGPA, aptitude scores, and placement outcomes.
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Lightbox Modal -->
+<div class="lightbox-modal" id="lightboxModal">
+    <div class="lightbox-content">
+        <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <img src="" alt="Enlarged Chart" class="lightbox-img" id="lightboxImg">
+        <h3 class="lightbox-title" id="lightboxTitle"></h3>
+        <p class="lightbox-caption" id="lightboxCaption"></p>
+    </div>
+</div>
+
+<script>
+    // Category Filtering Logic
+    function filterCategory(category) {
+        const buttons = document.querySelectorAll('.filter-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        
+        event.currentTarget.classList.add('active');
+
+        const cards = document.querySelectorAll('.chart-card');
+        cards.forEach(card => {
+            if (category === 'all' || card.getAttribute('data-category') === category) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+    }
+
+    // Lightbox Modal Controls
+    function openLightbox(imgSrc, title, caption) {
+        const modal = document.getElementById('lightboxModal');
+        const img = document.getElementById('lightboxImg');
+        const titleEl = document.getElementById('lightboxTitle');
+        const captionEl = document.getElementById('lightboxCaption');
+
+        img.src = imgSrc;
+        titleEl.textContent = title;
+        captionEl.textContent = caption;
+
+        modal.classList.add('active');
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightboxModal').classList.remove('active');
+    }
+
+    // Close lightbox on backdrop click
+    document.getElementById('lightboxModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeLightbox();
+        }
+    });
+
+    // Close on Escape key press
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeLightbox();
+        }
+    });
+</script>
+{% endblock %}
