@@ -29,7 +29,7 @@ def basic_ede(df):
 
     plt.xlabel("Placement Status")
     plt.ylabel("Number of Records")
-    plt.savefig(r"C:\Users\LUCKY\PycharmProjects\Placements Prediction System\results")
+    plt.savefig(r"C:\Users\LUCKY\PycharmProjects\Placements Prediction System\app\static\charts\Placement Prediction")
     plt.show()
 
 
@@ -39,7 +39,7 @@ def univariant(df):
     plt.title("Histogram of CGPA")
     plt.xlabel("CGPA")
     plt.ylabel("Frequency")
-    plt.savefig(r"C:\Users\LUCKY\PycharmProjects\Placements Prediction System\results\Histogram of CGPA")
+    plt.savefig(r"C:\Users\LUCKY\PycharmProjects\Placements Prediction System\app\static\charts\Histogram of CGPA")
 
     plt.show()
 
@@ -47,7 +47,7 @@ def univariant(df):
     plt.figure(figsize = (6,5))
     plt.pie(gendercount,labels=gendercount.index,autopct="%1.1f%%",startangle=90)
     plt.title("Gender distribution piechart")
-    plt.savefig(r"C:\Users\LUCKY\PycharmProjects\Placements Prediction System\results\Gender Piechart")
+    plt.savefig(r"C:\Users\LUCKY\PycharmProjects\Placements Prediction System\app\static\charts\Gender Piechart")
     plt.show()
 
 
@@ -57,7 +57,7 @@ def bivariate(df):
     plt.title("CGPA vs Aptitude Test Score")
     plt.xlabel("CGPA")
     plt.ylabel("Aptitude Test Score")
-    plt.savefig(r"C:\Users\LUCKY\PycharmProjects\Placements Prediction System\results\CGPA vs APTITUDE")
+    plt.savefig(r"C:\Users\LUCKY\PycharmProjects\Placements Prediction System\app\static\charts\CGPA vs APTITUDE")
     plt.show()
     plt.close()
 
@@ -67,7 +67,7 @@ def bivariate(df):
     plt.title("CGPA vs PlacementStatus")
     plt.xlabel("PlacementStatus")
     plt.ylabel("CGPA")
-    plt.savefig(r"C:\Users\LUCKY\PycharmProjects\Placements Prediction System\results\CGPA vs PLACEMENT")
+    plt.savefig(r"C:\Users\LUCKY\PycharmProjects\Placements Prediction System\app\static\charts\CGPA vs PLACEMENT")
     plt.show()
 
 def multivariate(df):
@@ -76,14 +76,14 @@ def multivariate(df):
         plt.figure(figsize=(8, 6))
         sns.heatmap(correlation, annot=True, cmap="coolwarm", fmt=".2f")
         plt.title("correlation heatmap")
-        plt.savefig(r"C:\Users\LUCKY\PycharmProjects\Placements Prediction System\results\HEATMAP.png")
+        plt.savefig(r"C:\Users\LUCKY\PycharmProjects\Placements Prediction System\app\static\charts\HEATMAP.png")
         plt.show()
         plt.close()
 
 
 if __name__ == "__main__":
     df=load_data()
-    #basic_ede(df)
-    #univariant(df)
-    #bivariate(df)
+    basic_ede(df)
+    univariant(df)
+    bivariate(df)
     multivariate(df)
