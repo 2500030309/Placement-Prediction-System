@@ -41,19 +41,19 @@ EDA Visualizations | Placement Prediction System
 
 <!-- Category Filter Buttons -->
 <div class="filter-bar">
-    <button class="filter-btn active" onclick="filterCategory('all')">
+    <button class="filter-btn active" onclick="filterCategory('all', this)">
         <i class="fa-solid fa-layer-group"></i> All Charts
     </button>
-    <button class="filter-btn" onclick="filterCategory('target')">
+    <button class="filter-btn" onclick="filterCategory('target', this)">
         <i class="fa-solid fa-bullseye"></i> Target Variable
     </button>
-    <button class="filter-btn" onclick="filterCategory('univariate')">
+    <button class="filter-btn" onclick="filterCategory('univariate', this)">
         <i class="fa-solid fa-chart-column"></i> Univariate Analysis
     </button>
-    <button class="filter-btn" onclick="filterCategory('bivariate')">
+    <button class="filter-btn" onclick="filterCategory('bivariate', this)">
         <i class="fa-solid fa-chart-line"></i> Bivariate Analysis
     </button>
-    <button class="filter-btn" onclick="filterCategory('multivariate')">
+    <button class="filter-btn" onclick="filterCategory('multivariate', this)">
         <i class="fa-solid fa-table-cells"></i> Multivariate Heatmap
     </button>
 </div>
@@ -207,11 +207,13 @@ EDA Visualizations | Placement Prediction System
 
 <script>
     // Category Filtering Logic
-    function filterCategory(category) {
+    function filterCategory(category, btnElement) {
         const buttons = document.querySelectorAll('.filter-btn');
         buttons.forEach(btn => btn.classList.remove('active'));
         
-        event.currentTarget.classList.add('active');
+        if (btnElement) {
+            btnElement.classList.add('active');
+        }
 
         const cards = document.querySelectorAll('.chart-card');
         cards.forEach(card => {

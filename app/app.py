@@ -1,10 +1,9 @@
 import sys
 import os
-# Add project root to Python path so 'src' can be imported
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from flask import Flask, render_template
-from src.data.load_data import load_data , get_summary
+from src.data.load_data import load_data, get_summary
 
 
 app = Flask(__name__)
@@ -36,7 +35,7 @@ def dataset():
     return render_template(
         "dataset.html",
         summary=summary,
-        first_rows = df.head().to_html(index=False)
+        first_rows=df.head().to_html(index=False, classes="dataset-table")
     )
 
 
