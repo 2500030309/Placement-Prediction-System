@@ -1,64 +1,156 @@
+import sys
+import os
+import joblib
 import numpy as np
 import pandas as pd
-import joblib
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report, mean_squared_error, root_mean_squared_error
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    roc_auc_score,
+    log_loss,
+    confusion_matrix,
+    classification_report,
+    mean_squared_error
+)
+from sklearn.model_selection import GridSearchCV
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from src.data.load_data import get_project_root
 
 def load_preprocessed_data():
-    train_data = r"C:\Users\LUCKY\PycharmProjects\Placements Prediction System\data\preprocessed_train.csv"
-    test_data =  r"C:\Users\LUCKY\PycharmProjects\Placements Prediction System\data\preprocessed_test.csv"
-    train_data = pd.read_csv(train_data)
-    test_data = pd.read_csv(test_data)
+    """Loads 80/20 preprocessed training and testing datasets using relative paths."""
+    project_root = get_project_root()
+    train_path = os.path.join(project_root, "data", "preprocessed_train.csv")
+    test_path = os.path.join(project_root, "data", "preprocessed_test.csv")
+    
+    if not os.path.exists(train_path) or not os.path.exists(test_path):
+        raise FileNotFoundError("Preprocessed train/test data not found. Please run src/data/preprocess.py first.")
+        
+    train_data = pd.read_csv(train_path)
+    test_data = pd.read_csv(test_path)
     return train_data, test_data
 
 def split_features_target(train_data, test_data):
+    """Separates feature matrix (X) and target vector (Y)."""
     X_train = train_data.drop(columns=["PlacementStatus"])
     X_test = test_data.drop(columns=["PlacementStatus"])
     Y_train = train_data["PlacementStatus"]
     Y_test = test_data["PlacementStatus"]
     return X_train, X_test, Y_train, Y_test
 
-def create_model():
-    model = LogisticRegression(
-        max_iter = 1000,
-        random_state= 42
+def create_and_tune_model(X_train, Y_train):
+    """Tunes Logistic Regression model hyperparameters using 5-Fold Stratified CV."""
+    base_model = LogisticRegression(random_state=42, max_iter=1000)
+    
+    param_grid = {
+        'C': [0.01, 0.1, 1.0, 10.0],
+        'solver': ['lbfgs', 'liblinear'],
+        'class_weight': [None, 'balanced']
+    }
+    
+    print("\n[INFO] Performing Hyperparameter Tuning with 5-Fold Cross-Validation...")
+    grid_search = GridSearchCV(
+        estimator=base_model,
+        param_grid=param_grid,
+        cv=5,
+        scoring='roc_auc',
+        n_jobs=-1,
+        verbose=0
     )
-
-    return model
+    
+    grid_search.fit(X_train, Y_train)
+    
+    print(f"Best Hyperparameters Found: {grid_search.best_params_}")
+    print(f"Best 5-Fold CV ROC-AUC Score: {grid_search.best_score_:.4f}")
+    
+    return grid_search.best_estimator_
 
 def train_model(model, X_train, Y_train):
+    """Fits model on training data."""
     model.fit(X_train, Y_train)
     return model
 
 def evaluate_model(model, X_test, Y_test):
+    """Evaluates model performance with Accuracy, Precision, Recall, F1, ROC-AUC, Log Loss, MSE, and RMSE."""
     Y_pred = model.predict(X_test)
-    print("\nAccuracy: ")
-    print(model.score(X_test, Y_test))
-    print("\nClassification Report: ")
+    Y_pred_proba = model.predict_proba(X_test)[:, 1]
+    
+    acc = accuracy_score(Y_test, Y_pred)
+    prec = precision_score(Y_test, Y_pred)
+    rec = recall_score(Y_test, Y_pred)
+    f1 = f1_score(Y_test, Y_pred)
+    roc_auc = roc_auc_score(Y_test, Y_pred_proba)
+    loss = log_loss(Y_test, Y_pred_proba)
+    cm = confusion_matrix(Y_test, Y_pred)
+    
+    # Regression metrics (MSE, RMSE) as requested
+    mse = mean_squared_error(Y_test, Y_pred_proba)
+    rmse = np.sqrt(mse)
+    
+    print("\n==================================================")
+    print("          MODEL EVALUATION METRICS                ")
+    print("==================================================")
+    print(f" Accuracy Score:             {acc:.4f} ({acc*100:.2f}%)")
+    print(f" Precision Score:            {prec:.4f}")
+    print(f" Recall Score:               {rec:.4f}")
+    print(f" F1-Score:                   {f1:.4f}")
+    print(f" ROC-AUC Score:              {roc_auc:.4f}")
+    print(f" Log Loss:                   {loss:.4f}")
+    print(f" Mean Squared Error (MSE):   {mse:.4f}")
+    print(f" Root Mean Sq Error (RMSE):  {rmse:.4f}")
+    print("\nConfusion Matrix:")
+    print(cm)
+    print("\nClassification Report:")
     print(classification_report(Y_test, Y_pred))
+    
+    return {
+        "accuracy": acc,
+        "precision": prec,
+        "recall": rec,
+        "f1": f1,
+        "roc_auc": roc_auc,
+        "log_loss": loss,
+        "mse": mse,
+        "rmse": rmse
+    }
 
 def save_model(model):
-    model_path = r"C:\Users\LUCKY\PycharmProjects\Placements Prediction System\models\logistcs_regression.pkl"
+    """Saves model using relative project paths."""
+    project_root = get_project_root()
+    models_dir = os.path.join(project_root, "models")
+    os.makedirs(models_dir, exist_ok=True)
+    
+    model_path = os.path.join(models_dir, "logistcs_regression.pkl")
     joblib.dump(model, model_path)
-    print("\nModel Saved Successfully")
-    print(model_path)
+    print("\n[SUCCESS] Model Saved Successfully")
+    print(f" Model Path: {model_path}")
 
 if __name__ == "__main__":
     train_data, test_data = load_preprocessed_data()
-    print("Training Data Shape: ")
-    print(train_data.shape)
-    print("Testing Data Shape: ")
-    print(test_data.shape)
+    print(f"Training Data Shape: {train_data.shape} (80%)")
+    print(f"Testing Data Shape:  {test_data.shape} (20%)")
+    
     X_train, X_test, Y_train, Y_test = split_features_target(train_data, test_data)
-    print("\nX_train Shape : ")
-    print(X_train.shape)
-    print("\nX_test Shape : ")
-    print(X_test.shape)
+    print(f"\nX_train Shape: {X_train.shape}")
+    print(f"X_test Shape:  {X_test.shape}")
 
-    model = create_model()
-    print("\n Logistic Regression Model Created ")
-    model = train_model(model, X_train, Y_train)
-    print("\n Logistic Regression Model Evaluated ")
-    evaluate_model(model, X_test, Y_test)
-    save_model(model)
+    tuned_model = create_and_tune_model(X_train, Y_train)
+    print("\n[INFO] Evaluating Optimal Logistic Regression Model...")
+    metrics = evaluate_model(tuned_model, X_test, Y_test)
+    save_model(tuned_model)
+
+    # Calculate and print explicit MSE and RMSE in terminal
+    Y_pred_proba = tuned_model.predict_proba(X_test)[:, 1]
+    mse = mean_squared_error(Y_test, Y_pred_proba)
+    rmse = np.sqrt(mse)
+
+    print("\n----------------------------------------")
+    print("      FINAL TERMINAL METRICS OUTPUT     ")
+    print("----------------------------------------")
+    print(f"Mean Squared Error (MSE):       {mse:.6f}")
+    print(f"Root Mean Squared Error (RMSE):  {rmse:.6f}")
+    print("----------------------------------------")
+
