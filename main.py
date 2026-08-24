@@ -5,11 +5,17 @@ from src.data.load_data import load_data, get_summary
 from src.data.eda import basic_eda, univariate, bivariate, multivariate
 from src.data.preprocess import preprocess_pipeline
 from src.MLmodels.logistcs_regression import (
-    load_preprocessed_data,
-    split_features_target,
-    create_and_tune_model,
-    evaluate_model,
-    save_model
+    load_preprocessed_data as load_logistic_data,
+    split_features_target as split_logistic_features,
+    create_and_tune_model as tune_logistic_model,
+    evaluate_model as evaluate_logistic_model,
+    save_model as save_logistic_model
+)
+from src.MLmodels.linear_regression import (
+    load_regression_data as load_linear_data,
+    create_and_tune_model as tune_linear_model,
+    evaluate_model as evaluate_linear_model,
+    save_model as save_linear_model
 )
 
 def main():
@@ -18,13 +24,13 @@ def main():
     print("==================================================\n")
     
     # 1. Load Data
-    print("[1/4] Loading dataset...")
+    print("[1/5] Loading dataset...")
     df = load_data()
     summary = get_summary(df)
     print(f"      Rows: {summary['rows']}, Columns: {summary['columns']}, Target: {summary['target']}")
     
     # 2. Run EDA
-    print("\n[2/4] Generating Exploratory Data Analysis (EDA) visualizations...")
+    print("\n[2/5] Generating Exploratory Data Analysis (EDA) visualizations...")
     basic_eda(df)
     univariate(df)
     bivariate(df)
@@ -32,16 +38,23 @@ def main():
     print("      EDA charts saved to app/static/charts/")
     
     # 3. Run Preprocessing
-    print("\n[3/4] Executing data preprocessing pipeline...")
+    print("\n[3/5] Executing data preprocessing pipeline...")
     X_train_df, X_test_df = preprocess_pipeline(df)
     
-    # 4. Model Training & Evaluation
-    print("\n[4/4] Training and evaluating Logistic Regression model...")
-    train_data, test_data = load_preprocessed_data()
-    X_train, X_test, Y_train, Y_test = split_features_target(train_data, test_data)
-    model = create_and_tune_model(X_train, Y_train)
-    evaluate_model(model, X_test, Y_test)
-    save_model(model)
+    # 4. Logistic Regression Training & Evaluation (Classification: PlacementStatus)
+    print("\n[4/5] Training and evaluating Logistic Regression model (Placement Status)...")
+    train_data, test_data = load_logistic_data()
+    X_train_cls, X_test_cls, Y_train_cls, Y_test_cls = split_logistic_features(train_data, test_data)
+    log_model = tune_logistic_model(X_train_cls, Y_train_cls)
+    evaluate_logistic_model(log_model, X_test_cls, Y_test_cls)
+    save_logistic_model(log_model)
+    
+    # 5. Linear Regression Training & Evaluation (Regression: Salary Package)
+    print("\n[5/5] Training and evaluating Linear Regression model (Salary Package)...")
+    X_train_reg, X_test_reg, Y_train_reg, Y_test_reg = load_linear_data()
+    lin_model = tune_linear_model(X_train_reg, Y_train_reg)
+    evaluate_linear_model(lin_model, X_test_reg, Y_test_reg)
+    save_linear_model(lin_model)
     
     print("\n==================================================")
     print("       PIPELINE EXECUTED SUCCESSFULLY!            ")
@@ -49,5 +62,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
