@@ -20,12 +20,14 @@ def split_data(df):
     X = df.drop(columns=drop_cols)
     y = df["PlacementStatus"]
     
+    stratify_target = y if len(np.unique(y)) > 1 else None
+    
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
         test_size=0.2,
         random_state=42,
-        stratify=y
+        stratify=stratify_target
     )
 
     return X_train, X_test, y_train, y_test
@@ -143,7 +145,7 @@ def standardize_data(X_train, X_test, feature_columns):
     
     return X_train, X_test, scaler
 
-def preprocess_pipeline(df=None):
+def preprocess_pipeline(df=None, save_files=True):
     """Executes the complete preprocessing pipeline on raw data."""
     if df is None:
         df = load_data()
@@ -191,41 +193,48 @@ def preprocess_pipeline(df=None):
     X_train_out["PlacementStatus"] = y_train.values
     X_test_out["PlacementStatus"] = y_test.values
     
-    # Save datasets & fitted preprocessors
-    project_root = get_project_root()
-    data_dir = os.path.join(project_root, "data")
-    models_dir = os.path.join(project_root, "models")
-    os.makedirs(data_dir, exist_ok=True)
-    os.makedirs(models_dir, exist_ok=True)
-    
-    train_save_path = os.path.join(data_dir, "preprocessed_train.csv")
-    test_save_path = os.path.join(data_dir, "preprocessed_test.csv")
-    preprocessor_save_path = os.path.join(models_dir, "preprocessor.pkl")
-    
-    X_train_out.to_csv(train_save_path, index=False)
-    X_test_out.to_csv(test_save_path, index=False)
-    
-    preprocessor_artifact = {
-        "imputer": imputer,
-        "ordinal_encoder": ordinal_encoder,
-        "one_hot_encoder": one_hot_encoder,
-        "scaler": scaler,
-        "numerical_features": numerical_features,
-        "ordinal_features": ordinal_features,
-        "one_hot_features": one_hot_features,
-        "feature_columns": all_feature_cols
-    }
-    joblib.dump(preprocessor_artifact, preprocessor_save_path)
+    # Save datasets & fitted preprocessors if requested
+    if save_files:
+        project_root = get_project_root()
+        data_dir = os.path.join(project_root, "data")
+        models_dir = os.path.join(project_root, "models")
+        os.makedirs(data_dir, exist_ok=True)
+        os.makedirs(models_dir, exist_ok=True)
+        
+        train_save_path = os.path.join(data_dir, "preprocessed_train.csv")
+        test_save_path = os.path.join(data_dir, "preprocessed_test.csv")
+        preprocessor_save_path = os.path.join(models_dir, "preprocessor.pkl")
+        
+        try:
+            X_train_out.to_csv(train_save_path, index=False)
+            X_test_out.to_csv(test_save_path, index=False)
+            print("\nFiles saved successfully:")
+            print(f" - Train data: {train_save_path}")
+            print(f" - Test data:  {test_save_path}")
+        except Exception as e:
+            print(f"\n[WARNING] Could not write preprocessed CSVs to disk ({e}). Proceeding in memory.")
+        
+        try:
+            preprocessor_artifact = {
+                "imputer": imputer,
+                "ordinal_encoder": ordinal_encoder,
+                "one_hot_encoder": one_hot_encoder,
+                "scaler": scaler,
+                "numerical_features": numerical_features,
+                "ordinal_features": ordinal_features,
+                "one_hot_features": one_hot_features,
+                "feature_columns": all_feature_cols
+            }
+            joblib.dump(preprocessor_artifact, preprocessor_save_path)
+            print(f" - Preprocessor: {preprocessor_save_path}")
+        except Exception as e:
+            print(f"\n[WARNING] Could not save preprocessor artifact ({e}).")
     
     print("\n----------------------------------------")
     print("PREPROCESSING COMPLETED SUCCESSFULLY")
     print("----------------------------------------")
     print(f"Final Training Shape: {X_train_out.shape}")
     print(f"Final Testing Shape:  {X_test_out.shape}")
-    print("\nFiles saved successfully:")
-    print(f" - Train data: {train_save_path}")
-    print(f" - Test data:  {test_save_path}")
-    print(f" - Preprocessor: {preprocessor_save_path}")
     
     return X_train_out, X_test_out
 

@@ -39,13 +39,9 @@ def load_regression_data(placed_only=True):
     X_train = X_train_df[feature_cols]
     X_test = X_test_df[feature_cols]
     
-    # Split target matching same 80/20 train_test_split as preprocess_pipeline
-    _, _, Y_train, Y_test = train_test_split(
-        df.drop(columns=["Salary Package"]),
-        df["Salary Package"],
-        test_size=0.2,
-        random_state=42
-    )
+    # Extract target using exact row indices produced by preprocess_pipeline
+    Y_train = df.loc[X_train_df.index, "Salary Package"]
+    Y_test = df.loc[X_test_df.index, "Salary Package"]
         
     return X_train, X_test, Y_train, Y_test
 
@@ -104,8 +100,8 @@ def evaluate_model(model, X_test, Y_test):
     print(f" Mean Absolute Error (MAE):     {mae:.4f} LPA")
     print(f" Mean Squared Error (MSE):      {mse:.4f}")
     print(f" Root Mean Sq Error (RMSE):     {rmse:.4f} LPA")
-    print(f" R-Squared (R²) Score:          {r2:.4f}")
-    print(f" Adjusted R² Score:             {adj_r2:.4f}")
+    print(f" R-Squared (R2) Score:         {r2:.4f}")
+    print(f" Adjusted R2 Score:            {adj_r2:.4f}")
     print("==================================================")
     
     return {
