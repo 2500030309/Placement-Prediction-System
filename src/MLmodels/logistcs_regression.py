@@ -61,7 +61,7 @@ def create_and_tune_model(X_train, Y_train):
         param_grid=param_grid,
         cv=5,
         scoring='roc_auc',
-        n_jobs=-1,
+        n_jobs=1,
         verbose=1
     )
     

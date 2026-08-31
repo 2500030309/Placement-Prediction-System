@@ -62,7 +62,7 @@ def create_and_tune_model(X_train, Y_train):
         param_grid=param_grid,
         cv=5,
         scoring='neg_mean_squared_error',
-        n_jobs=-1,
+        n_jobs=1,
         verbose=0
     )
     

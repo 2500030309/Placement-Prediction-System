@@ -3,7 +3,8 @@ import os
 import joblib
 import numpy as np
 import pandas as pd
-from sklearn.tree import DecisionTreeClassifier
+import matplotlib.pyplot as plt
+from sklearn.tree import DecisionTreeClassifier, plot_tree, export_text
 from sklearn.metrics import (
     accuracy_score,
     precision_score,
@@ -54,10 +55,9 @@ def create_and_tune_model(X_train, Y_train):
     
     param_grid = {
         'criterion': ['gini', 'entropy'],
-        'max_depth': [3, 5, 8, 12, None],
-        'min_samples_split': [2, 10, 20],
-        'min_samples_leaf': [1, 4, 10],
-        'class_weight': [None, 'balanced']
+        'max_depth': [3, 5, 8],
+        'min_samples_split': [2, 10],
+        'min_samples_leaf': [1, 5]
     }
     
     print("\n[INFO] Performing Hyperparameter Tuning for Decision Tree (5-Fold CV)...", flush=True)
@@ -66,8 +66,8 @@ def create_and_tune_model(X_train, Y_train):
         param_grid=param_grid,
         cv=5,
         scoring='roc_auc',
-        n_jobs=-1,
-        verbose=1
+        n_jobs=1,
+        verbose=0
     )
     
     grid_search.fit(X_train, Y_train)
@@ -123,7 +123,7 @@ def evaluate_model(model, X_test, Y_test):
     # Feature Importances
     if hasattr(model, "feature_importances_") and hasattr(X_test, "columns"):
         importances = pd.Series(model.feature_importances_, index=X_test.columns).sort_values(ascending=False)
-        print("\nTop 5 Important Features:", flush=True)
+        print("\nTop 5 Important Placement Features:", flush=True)
         for feat, score in importances.head(5).items():
             print(f" - {feat}: {score:.4f}", flush=True)
             
@@ -137,6 +137,60 @@ def evaluate_model(model, X_test, Y_test):
         "mse": mse,
         "rmse": rmse
     }
+
+
+def plot_and_save_tree(model, feature_names, class_names=None, max_depth=3, show_plot=False):
+    """
+    Visualizes, saves, and prints the Decision Tree diagram for the Placement Prediction System.
+    """
+    if class_names is None:
+        class_names = ["Not Placed", "Placed"]
+    
+    project_root = get_project_root()
+    charts_dir = os.path.join(project_root, "app", "static", "charts")
+    os.makedirs(charts_dir, exist_ok=True)
+
+    # 1. Print Text-based Tree Structure in Terminal
+    print("\n==================================================", flush=True)
+    print(f"   PLACEMENT DECISION TREE STRUCTURE (DEPTH {max_depth})   ", flush=True)
+    print("==================================================", flush=True)
+    tree_rules = export_text(
+        model,
+        feature_names=list(feature_names),
+        max_depth=max_depth
+    )
+    print(tree_rules, flush=True)
+    print("==================================================", flush=True)
+    
+    # 2. Render and Save Visual Decision Tree Diagram
+    plt.figure(figsize=(24, 12), dpi=300)
+    plot_tree(
+        model,
+        feature_names=list(feature_names),
+        class_names=class_names,
+        filled=True,
+        rounded=True,
+        max_depth=max_depth,
+        fontsize=9,
+        precision=2
+    )
+    plt.title("Placement Prediction System - Decision Tree Diagram", fontsize=18, fontweight='bold', pad=20)
+    plt.tight_layout()
+    
+    chart_path2 = os.path.join(charts_dir, "decision_tree.png")
+
+    plt.savefig(chart_path1, bbox_inches='tight', dpi=300)
+    plt.savefig(chart_path2, bbox_inches='tight', dpi=300)
+    print(f"\n[INFO] Decision Tree Diagram successfully saved to:")
+    print(f"       - {chart_path1}")
+    print(f"       - {chart_path2}")
+
+    if show_plot:
+        try:
+            plt.show()
+        except Exception:
+            pass
+    plt.close()
 
 
 def save_model(model):
@@ -167,4 +221,9 @@ if __name__ == "__main__":
     tuned_model = create_and_tune_model(X_train, Y_train)
     print("\n[INFO] Evaluating Optimal Decision Tree Model...", flush=True)
     metrics = evaluate_model(tuned_model, X_test, Y_test)
+    
+    # Generate and save project decision tree diagram
+    plot_and_save_tree(tuned_model, feature_names=X_train.columns, class_names=["Not Placed", "Placed"], max_depth=3)
+    
     save_model(tuned_model)
+
