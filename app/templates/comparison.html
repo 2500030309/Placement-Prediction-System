@@ -1,0 +1,540 @@
+{% extends "base.html" %}
+
+{% block title %}
+Model Comparison & Top-Rated Prediction | Placement Prediction System
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/eda.css') }}">
+<style>
+    .comparison-table-wrapper {
+        background: var(--card-bg);
+        border: var(--glass-border);
+        border-radius: var(--radius-md);
+        padding: 24px;
+        box-shadow: var(--glass-shadow);
+        overflow-x: auto;
+        margin-bottom: 35px;
+    }
+    .comp-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+    .comp-table th, .comp-table td {
+        padding: 14px 16px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .comp-table th {
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+    }
+    .comp-table tr:hover {
+        background: rgba(255, 255, 255, 0.02);
+    }
+    .badge-winner {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.3));
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.4);
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11.5px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .badge-runnerup {
+        background: rgba(59, 130, 246, 0.15);
+        color: #3b82f6;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11.5px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .predictor-card {
+        background: var(--card-bg);
+        border: var(--glass-border);
+        border-radius: var(--radius-md);
+        padding: 28px;
+        box-shadow: var(--glass-shadow);
+        margin-bottom: 40px;
+    }
+    .preset-btn-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 16px 0 24px 0;
+    }
+    .preset-btn {
+        background: rgba(255, 255, 255, 0.05);
+        border: var(--glass-border);
+        color: var(--text-main);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .preset-btn:hover {
+        background: rgba(16, 185, 129, 0.15);
+        border-color: #10b981;
+        color: #10b981;
+    }
+    .form-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+    .input-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+    .input-field label {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-muted);
+    }
+    .input-field input, .input-field select {
+        background: rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: var(--text-main);
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+    .input-field input:focus, .input-field select:focus {
+        border-color: #10b981;
+    }
+    .predict-submit-btn {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: #ffffff;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+    }
+    .predict-submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+    }
+    .result-box {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: var(--radius-md);
+        padding: 24px;
+        margin-top: 28px;
+        display: none;
+        animation: fadeIn 0.4s ease;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .progress-bar-wrap {
+        background: rgba(255, 255, 255, 0.08);
+        height: 14px;
+        border-radius: 20px;
+        overflow: hidden;
+        margin: 10px 0;
+    }
+    .progress-bar-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #10b981, #3b82f6);
+        border-radius: 20px;
+        transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .model-vote-badge {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 14px;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 8px;
+        margin-top: 8px;
+        font-size: 13.5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <h1>Model Comparison & Top-Rated Model Predictor</h1>
+    <p>Compare performance metrics across all 6 machine learning models and test real-time placement prediction using the top-rated algorithm.</p>
+</div>
+
+<!-- Highlight Stat Cards -->
+<section class="stats-grid" style="margin-bottom: 30px;">
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-trophy" style="color: #f59e0b;"></i></div>
+        <div class="stat-info">
+            <h3>92.00% (Logistic Reg)</h3>
+            <p>Top Classification Accuracy</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-tree" style="color: #10b981;"></i></div>
+        <div class="stat-info">
+            <h3>91.16% (Random Forest)</h3>
+            <p>Top Ensemble Generalizer</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-chart-line" style="color: #3b82f6;"></i></div>
+        <div class="stat-info">
+            <h3>0.8693 (Ridge Reg)</h3>
+            <p>Salary Package R² Score</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-bezier-curve" style="color: #8b5cf6;"></i></div>
+        <div class="stat-info">
+            <h3>K = 3 (Elbow Method)</h3>
+            <p>Optimal Clustering Score</p>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 1: SIDE BY SIDE COMPARISON TABLE -->
+<div class="comparison-table-wrapper">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
+        <h2 style="margin: 0; font-size: 20px;"><i class="fa-solid fa-scale-balanced" style="color: #10b981; margin-right: 8px;"></i> Comprehensive Model Comparison Matrix</h2>
+        <span style="font-size: 13px; color: var(--text-muted);"><i class="fa-solid fa-circle-info"></i> Evaluated on 10,000 Stratified Test Samples</span>
+    </div>
+
+    <table class="comp-table">
+        <thead>
+            <tr>
+                <th>Model</th>
+                <th>Task Type</th>
+                <th>Primary Metric</th>
+                <th>Precision / Error</th>
+                <th>Training Speed</th>
+                <th>Interpretability</th>
+                <th>Status / Award</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="background: rgba(16, 185, 129, 0.05);">
+                <td><strong>Logistic Regression</strong></td>
+                <td>Classification (Placement)</td>
+                <td><strong style="color: #10b981;">92.00% Accuracy</strong></td>
+                <td>0.93 Precision / 0.95 Recall</td>
+                <td><span style="color: #10b981;"><i class="fa-solid fa-bolt"></i> Ultra Fast</span></td>
+                <td>Very High (Coefficients)</td>
+                <td><span class="badge-winner"><i class="fa-solid fa-crown"></i> Top Overall Classifier</span></td>
+            </tr>
+            <tr>
+                <td><strong>Random Forest</strong></td>
+                <td>Classification (Placement)</td>
+                <td><strong style="color: #3b82f6;">91.16% Accuracy</strong></td>
+                <td>0.91 Precision / 0.96 Recall</td>
+                <td>Moderate (100 Trees)</td>
+                <td>High (Feature Importances)</td>
+                <td><span class="badge-runnerup"><i class="fa-solid fa-shield-halved"></i> Best Generalizer</span></td>
+            </tr>
+            <tr>
+                <td><strong>Decision Tree</strong></td>
+                <td>Classification (Placement)</td>
+                <td>89.86% Accuracy</td>
+                <td>0.90 Precision / 0.96 Recall</td>
+                <td><span style="color: #10b981;"><i class="fa-solid fa-bolt"></i> Ultra Fast</span></td>
+                <td>Highest (Direct Rules)</td>
+                <td><span>Solid Baseline Tree</span></td>
+            </tr>
+            <tr style="background: rgba(59, 130, 246, 0.05);">
+                <td><strong>Linear / Ridge Regression</strong></td>
+                <td>Regression (Salary Package)</td>
+                <td><strong style="color: #3b82f6;">R² = 0.8693</strong></td>
+                <td>MAE: 2.10 LPA / RMSE: 2.45</td>
+                <td><span style="color: #10b981;"><i class="fa-solid fa-bolt"></i> Instant</span></td>
+                <td>High (Weights per feature)</td>
+                <td><span class="badge-winner" style="background: rgba(59,130,246,0.2); color: #3b82f6; border-color: rgba(59,130,246,0.3);"><i class="fa-solid fa-crown"></i> Top Salary Model</span></td>
+            </tr>
+            <tr>
+                <td><strong>Gradient Descent Linear</strong></td>
+                <td>Regression (Salary Package)</td>
+                <td>Loss Minimized (100 Epochs)</td>
+                <td>MAE: 3.58 LPA</td>
+                <td>Iterative Batch GD</td>
+                <td>High (Slope & Intercept)</td>
+                <td><span>Algorithmic Study</span></td>
+            </tr>
+            <tr>
+                <td><strong>K-Means (Elbow Method)</strong></td>
+                <td>Clustering (Segmentation)</td>
+                <td>Silhouette: 0.3729</td>
+                <td>WCSS: 86,421.11</td>
+                <td>Fast (4 Iterations)</td>
+                <td>Visual Centroid Mapping</td>
+                <td><span class="badge-winner" style="background: rgba(139,92,246,0.2); color: #8b5cf6; border-color: rgba(139,92,246,0.3);"><i class="fa-solid fa-star"></i> Top Unsupervised</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- SECTION 2: LIVE PREDICTION WITH TOP-RATED MODEL -->
+<div class="predictor-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+            <h2 style="margin: 0; font-size: 22px;"><i class="fa-solid fa-wand-magic-sparkles" style="color: #10b981; margin-right: 8px;"></i> Live Placement Predictor (Top Model Engine)</h2>
+            <p style="color: var(--text-muted); font-size: 14px; margin-top: 6px;">
+                Direct inference powered by the trained <strong>Logistic Regression (92.00%)</strong> &amp; <strong>Random Forest (91.16%)</strong> models loaded directly from disk.
+            </p>
+        </div>
+        <span class="badge-winner"><i class="fa-solid fa-circle-check"></i> Live Production Models Loaded</span>
+    </div>
+
+    <!-- Quick Presets -->
+    <div class="preset-btn-group">
+        <span style="font-size: 13px; color: var(--text-muted); align-self: center;">Quick Load Presets:</span>
+        <button type="button" class="preset-btn" onclick="applyPreset('top')">
+            <i class="fa-solid fa-star" style="color: #f59e0b;"></i> Dream Candidate (High CGPA)
+        </button>
+        <button type="button" class="preset-btn" onclick="applyPreset('moderate')">
+            <i class="fa-solid fa-scale-balanced" style="color: #3b82f6;"></i> Balanced Candidate
+        </button>
+        <button type="button" class="preset-btn" onclick="applyPreset('risk')">
+            <i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i> At-Risk Candidate
+        </button>
+    </div>
+
+    <form id="topModelForm" onsubmit="runTopModelPrediction(event)">
+        <div class="form-grid-3">
+            <div class="input-field">
+                <label for="p_cgpa">Current CGPA (0 - 10)</label>
+                <input type="number" id="p_cgpa" step="0.01" min="0" max="10" required value="8.45">
+            </div>
+            <div class="input-field">
+                <label for="p_coding">Coding Test Score (0 - 100)</label>
+                <input type="number" id="p_coding" step="0.1" min="0" max="100" required value="75.0">
+            </div>
+            <div class="input-field">
+                <label for="p_aptitude">Aptitude Test Score (0 - 100)</label>
+                <input type="number" id="p_aptitude" step="0.1" min="0" max="100" required value="78.0">
+            </div>
+            <div class="input-field">
+                <label for="p_interview">Mock Interview Score (0 - 10)</label>
+                <input type="number" id="p_interview" step="0.1" min="0" max="10" required value="7.5">
+            </div>
+            <div class="input-field">
+                <label for="p_internships">Completed Internships</label>
+                <input type="number" id="p_internships" min="0" max="10" required value="2">
+            </div>
+            <div class="input-field">
+                <label for="p_projects">Major Projects</label>
+                <input type="number" id="p_projects" min="0" max="20" required value="3">
+            </div>
+            <div class="input-field">
+                <label for="p_backlogs">History of Backlogs?</label>
+                <select id="p_backlogs">
+                    <option value="No" selected>No (Zero Backlogs)</option>
+                    <option value="Yes">Yes (Active / Past Backlogs)</option>
+                </select>
+            </div>
+            <div class="input-field">
+                <label for="p_stream">Engineering Stream</label>
+                <select id="p_stream">
+                    <option value="Computer Science" selected>Computer Science</option>
+                    <option value="Information Technology">Information Technology</option>
+                    <option value="Electronics & Communication">Electronics & Communication</option>
+                    <option value="Mechanical">Mechanical</option>
+                    <option value="Civil">Civil</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" class="predict-submit-btn" id="submitBtn">
+            <i class="fa-solid fa-play"></i> Run Prediction with Top-Rated Model
+        </button>
+    </form>
+
+    <!-- Results Box -->
+    <div class="result-box" id="resultBox">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+            <div>
+                <span id="statusBadge" style="font-size: 16px; font-weight: 700; padding: 6px 16px; border-radius: 20px;"></span>
+                <span style="color: var(--text-muted); font-size: 13.5px; margin-left: 10px;" id="statusSubtitle"></span>
+            </div>
+            <div style="text-align: right;" id="salaryBlock">
+                <span style="font-size: 13px; color: var(--text-muted); display: block;">Estimated Salary Package</span>
+                <strong style="font-size: 22px; color: #10b981;" id="salaryText">-- LPA</strong>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div style="margin: 16px 0;">
+            <div style="display: flex; justify-content: space-between; font-size: 13.5px; font-weight: 600;">
+                <span>Placement Probability:</span>
+                <span id="probText" style="color: #10b981;">0%</span>
+            </div>
+            <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" id="probFill"></div>
+            </div>
+        </div>
+
+        <!-- Model Breakdown Voting -->
+        <h4 style="font-size: 14px; margin: 20px 0 8px 0; color: var(--text-muted);">Model Inference Breakdown:</h4>
+        <div class="model-vote-badge">
+            <span><strong>Logistic Regression (Top Accuracy - 92.00%):</strong></span>
+            <span id="logVote" style="font-weight: 600;">--</span>
+        </div>
+        <div class="model-vote-badge">
+            <span><strong>Random Forest (Top Ensemble - 91.16%):</strong></span>
+            <span id="rfVote" style="font-weight: 600;">--</span>
+        </div>
+
+        <!-- Custom Insight Note -->
+        <div style="background: rgba(16, 185, 129, 0.08); border-left: 4px solid #10b981; padding: 12px 16px; border-radius: 0 8px 8px 0; margin-top: 18px; font-size: 13px;" id="adviceBox">
+            <!-- Dynamic feedback -->
+        </div>
+    </div>
+</div>
+
+<script>
+    function applyPreset(type) {
+        if (type === 'top') {
+            document.getElementById('p_cgpa').value = '8.95';
+            document.getElementById('p_coding').value = '84.0';
+            document.getElementById('p_aptitude').value = '88.0';
+            document.getElementById('p_interview').value = '8.5';
+            document.getElementById('p_internships').value = '2';
+            document.getElementById('p_projects').value = '3';
+            document.getElementById('p_backlogs').value = 'No';
+            document.getElementById('p_stream').value = 'Computer Science';
+        } else if (type === 'moderate') {
+            document.getElementById('p_cgpa').value = '7.25';
+            document.getElementById('p_coding').value = '58.0';
+            document.getElementById('p_aptitude').value = '64.0';
+            document.getElementById('p_interview').value = '6.5';
+            document.getElementById('p_internships').value = '1';
+            document.getElementById('p_projects').value = '2';
+            document.getElementById('p_backlogs').value = 'No';
+            document.getElementById('p_stream').value = 'Information Technology';
+        } else if (type === 'risk') {
+            document.getElementById('p_cgpa').value = '5.40';
+            document.getElementById('p_coding').value = '32.0';
+            document.getElementById('p_aptitude').value = '38.0';
+            document.getElementById('p_interview').value = '4.0';
+            document.getElementById('p_internships').value = '0';
+            document.getElementById('p_projects').value = '1';
+            document.getElementById('p_backlogs').value = 'Yes';
+            document.getElementById('p_stream').value = 'Mechanical';
+        }
+    }
+
+    async function runTopModelPrediction(event) {
+        event.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing Inference...';
+        btn.disabled = true;
+
+        const payload = {
+            cgpa: document.getElementById('p_cgpa').value,
+            coding_score: document.getElementById('p_coding').value,
+            aptitude_score: document.getElementById('p_aptitude').value,
+            mock_interview: document.getElementById('p_interview').value,
+            internships: document.getElementById('p_internships').value,
+            projects: document.getElementById('p_projects').value,
+            backlogs: document.getElementById('p_backlogs').value,
+            stream: document.getElementById('p_stream').value
+        };
+
+        try {
+            const response = await fetch('/api/predict_top_model', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await response.json();
+
+            if (!data.success) {
+                alert('Prediction Error: ' + (data.error || 'Unable to process'));
+                return;
+            }
+
+            const res = data.data;
+            const box = document.getElementById('resultBox');
+            box.style.display = 'block';
+
+            // Set outcome badge
+            const badge = document.getElementById('statusBadge');
+            const sub = document.getElementById('statusSubtitle');
+            if (res.status === 'Placed') {
+                badge.textContent = '🎉 LIKELY TO BE PLACED';
+                badge.style.background = 'rgba(16, 185, 129, 0.2)';
+                badge.style.color = '#10b981';
+                badge.style.border = '1px solid #10b981';
+                sub.textContent = 'Candidate demonstrates strong placement readiness indicators.';
+                document.getElementById('salaryBlock').style.display = 'block';
+                document.getElementById('salaryText').textContent = res.predicted_salary_lpa + ' LPA (' + res.salary_range + ')';
+            } else {
+                badge.textContent = '⚠️ NOT PLACED / MENTORSHIP NEEDED';
+                badge.style.background = 'rgba(239, 68, 68, 0.2)';
+                badge.style.color = '#ef4444';
+                badge.style.border = '1px solid #ef4444';
+                sub.textContent = 'Key indicators fall below standard recruitment cutoffs.';
+                document.getElementById('salaryBlock').style.display = 'none';
+            }
+
+            // Progress bar
+            document.getElementById('probText').textContent = res.placement_probability + '%';
+            document.getElementById('probFill').style.width = res.placement_probability + '%';
+            if (res.placement_probability < 50) {
+                document.getElementById('probFill').style.background = 'linear-gradient(90deg, #ef4444, #f59e0b)';
+                document.getElementById('probText').style.color = '#ef4444';
+            } else {
+                document.getElementById('probFill').style.background = 'linear-gradient(90deg, #10b981, #3b82f6)';
+                document.getElementById('probText').style.color = '#10b981';
+            }
+
+            // Model votes
+            document.getElementById('logVote').innerHTML = `<span style="color: ${res.logistic_regression.prediction === 'Placed' ? '#10b981' : '#ef4444'}">${res.logistic_regression.prediction} (${res.logistic_regression.probability}%)</span>`;
+            document.getElementById('rfVote').innerHTML = `<span style="color: ${res.random_forest.prediction === 'Placed' ? '#10b981' : '#ef4444'}">${res.random_forest.prediction} (${res.random_forest.probability}%)</span>`;
+
+            // Advice
+            const adviceBox = document.getElementById('adviceBox');
+            if (res.status === 'Placed') {
+                adviceBox.innerHTML = '<strong><i class="fa-solid fa-circle-check"></i> Recommendation:</strong> Candidate is prime for Tier-1 recruitment drives. Focus on advanced system design and behavioral rounds to secure top packages.';
+                adviceBox.style.borderLeftColor = '#10b981';
+            } else {
+                adviceBox.innerHTML = '<strong><i class="fa-solid fa-triangle-exclamation"></i> Actionable Roadmap:</strong> Recommend remedial coding sessions, clearing backlogs, and completing at least 1 guided full-stack or ML project before company shortlisting begins.';
+                adviceBox.style.borderLeftColor = '#ef4444';
+            }
+
+            // Smooth scroll to result
+            box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        } catch (err) {
+            alert('Error running inference: ' + err);
+        } finally {
+            btn.innerHTML = '<i class="fa-solid fa-play"></i> Run Prediction with Top-Rated Model';
+            btn.disabled = false;
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,397 @@
+{% extends "base.html" %}
+
+{% block title %}
+ML Models & Evaluation | Placement Prediction System
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/eda.css') }}">
+<style>
+    .metric-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(16, 185, 129, 0.12);
+        color: #10b981;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 13px;
+        border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+    .metric-badge.purple {
+        background: rgba(139, 92, 246, 0.12);
+        color: #8b5cf6;
+        border-color: rgba(139, 92, 246, 0.25);
+    }
+    .metric-badge.blue {
+        background: rgba(59, 130, 246, 0.12);
+        color: #3b82f6;
+        border-color: rgba(59, 130, 246, 0.25);
+    }
+    .metrics-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 14px 0;
+        font-size: 14px;
+    }
+    .metrics-table th, .metrics-table td {
+        padding: 8px 12px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .metrics-table th {
+        color: var(--text-muted);
+        font-weight: 600;
+    }
+    .model-tag {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        padding: 3px 8px;
+        border-radius: 6px;
+        margin-bottom: 8px;
+    }
+    .tag-clf {
+        background: rgba(16, 185, 129, 0.18);
+        color: #10b981;
+    }
+    .tag-reg {
+        background: rgba(59, 130, 246, 0.18);
+        color: #3b82f6;
+    }
+    .chart-preview-img {
+        width: 100%;
+        border-radius: 8px;
+        margin-top: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        transition: transform 0.25s ease;
+    }
+    .chart-preview-img:hover {
+        transform: scale(1.015);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <h1>Machine Learning Models & Evaluation</h1>
+    <p>Comprehensive performance benchmarks, metrics, and architecture visualizations across all trained predictive models.</p>
+</div>
+
+<!-- Stats Row -->
+<section class="stats-grid" style="margin-bottom: 30px;">
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-brain"></i></div>
+        <div class="stat-info">
+            <h3>5 Models</h3>
+            <p>Supervised Algorithms Evaluated</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-bullseye"></i></div>
+        <div class="stat-info">
+            <h3>92.00% Accuracy</h3>
+            <p>Top Classification Score</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+        <div class="stat-info">
+            <h3>0.8693 R² Score</h3>
+            <p>Salary Package Regression Fit</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-arrows-split-up-and-left"></i></div>
+        <div class="stat-info">
+            <h3>80 / 20 Split</h3>
+            <p>Stratified Train / Test Partition</p>
+        </div>
+    </div>
+</section>
+
+<!-- Filter Buttons -->
+<div class="filter-bar">
+    <button class="filter-btn active" onclick="filterModels('all', this)">
+        <i class="fa-solid fa-layer-group"></i> All Models
+    </button>
+    <button class="filter-btn" onclick="filterModels('classification', this)">
+        <i class="fa-solid fa-check-double"></i> Classification Models
+    </button>
+    <button class="filter-btn" onclick="filterModels('regression', this)">
+        <i class="fa-solid fa-chart-line"></i> Salary Regression
+    </button>
+</div>
+
+<!-- Models Grid -->
+<div class="charts-grid" id="modelsGrid">
+
+    <!-- Card 1: Logistic Regression -->
+    <div class="chart-card model-item" data-category="classification">
+        <span class="model-tag tag-clf">Supervised Classification</span>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 20px;">Logistic Regression</h3>
+            <span class="metric-badge"><i class="fa-solid fa-check"></i> 92.00% Acc</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">
+            Standard probabilistic binary classification model with L-BFGS optimization and feature standardization.
+        </p>
+
+        <table class="metrics-table">
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Score</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Accuracy</td>
+                    <td><strong>92.00%</strong></td>
+                    <td>10,000 Test Records</td>
+                </tr>
+                <tr>
+                    <td>Placed Precision</td>
+                    <td>0.93</td>
+                    <td>High true-positive reliability</td>
+                </tr>
+                <tr>
+                    <td>Placed Recall</td>
+                    <td>0.95</td>
+                    <td>Identifies 95% of placed candidates</td>
+                </tr>
+                <tr>
+                    <td>Solver</td>
+                    <td>L-BFGS</td>
+                    <td>Maximum iterations = 1000</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; font-size: 13px;">
+            <i class="fa-solid fa-lightbulb" style="color: #f59e0b;"></i>
+            <strong>Key Strength:</strong> Rapid convergence, highly interpretable feature coefficients, well-calibrated placement probability score.
+        </div>
+    </div>
+
+    <!-- Card 2: Decision Tree -->
+    <div class="chart-card model-item" data-category="classification">
+        <span class="model-tag tag-clf">Supervised Classification</span>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 20px;">Decision Tree Classifier</h3>
+            <span class="metric-badge"><i class="fa-solid fa-check"></i> 89.86% Acc</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">
+            Rule-based hierarchical decision splitting using Gini Impurity (max depth = 5) to balance accuracy and avoid overfitting.
+        </p>
+
+        <table class="metrics-table">
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Score</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Accuracy</td>
+                    <td><strong>89.86%</strong></td>
+                    <td>Gini Impurity Criterion</td>
+                </tr>
+                <tr>
+                    <td>Placed Recall</td>
+                    <td>0.96</td>
+                    <td>Captures 6,276 placed students</td>
+                </tr>
+                <tr>
+                    <td>Top Split 1</td>
+                    <td>SGPA Sem 8</td>
+                    <td>Primary root node decision factor</td>
+                </tr>
+                <tr>
+                    <td>Top Split 2</td>
+                    <td>Mock Interview</td>
+                    <td>Critical interview performance split</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4 style="margin: 16px 0 6px 0; font-size: 14px;">Trained Decision Tree Diagram:</h4>
+        <a href="{{ url_for('static', filename='charts/decision_tree.png') }}" target="_blank">
+            <img src="{{ url_for('static', filename='charts/decision_tree.png') }}" alt="Decision Tree Diagram" class="chart-preview-img" title="Click to view full size">
+        </a>
+    </div>
+
+    <!-- Card 3: Random Forest -->
+    <div class="chart-card model-item" data-category="classification">
+        <span class="model-tag tag-clf">Supervised Classification</span>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 20px;">Random Forest Classifier</h3>
+            <span class="metric-badge"><i class="fa-solid fa-check"></i> 91.16% Acc</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">
+            Ensemble of 100 randomized decision trees utilizing bootstrap aggregation (Bagging) to maximize generalization.
+        </p>
+
+        <table class="metrics-table">
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Score</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Accuracy</td>
+                    <td><strong>91.16%</strong></td>
+                    <td>100 Estimators</td>
+                </tr>
+                <tr>
+                    <td>Placed F1-Score</td>
+                    <td>0.93</td>
+                    <td>Robust precision & recall balance</td>
+                </tr>
+                <tr>
+                    <td>Top Feature 1</td>
+                    <td>SGPA Sem 6</td>
+                    <td>Highest Gini importance</td>
+                </tr>
+                <tr>
+                    <td>Top Feature 2</td>
+                    <td>CGPA Tier</td>
+                    <td>Academic tier categorization</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4 style="margin: 16px 0 6px 0; font-size: 14px;">Top Feature Importances:</h4>
+        <a href="{{ url_for('static', filename='charts/random_forest_feature_importance.png') }}" target="_blank">
+            <img src="{{ url_for('static', filename='charts/random_forest_feature_importance.png') }}" alt="Random Forest Feature Importance" class="chart-preview-img" title="Click to view full size">
+        </a>
+    </div>
+
+    <!-- Card 4: Linear / Ridge Regression -->
+    <div class="chart-card model-item" data-category="regression">
+        <span class="model-tag tag-reg">Supervised Regression</span>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 20px;">Linear / Ridge Regression</h3>
+            <span class="metric-badge blue"><i class="fa-solid fa-chart-line"></i> R² = 0.8693</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">
+            Predicts the expected annual Salary Package (LPA) for placed graduates using L2 regularized multi-variable regression.
+        </p>
+
+        <table class="metrics-table">
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                    <th>Interpretation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>R² Score</td>
+                    <td><strong>0.8693</strong></td>
+                    <td>Explains 86.9% of salary variance</td>
+                </tr>
+                <tr>
+                    <td>MAE</td>
+                    <td><strong>2.10 LPA</strong></td>
+                    <td>Mean Absolute Error</td>
+                </tr>
+                <tr>
+                    <td>RMSE</td>
+                    <td><strong>2.45 LPA</strong></td>
+                    <td>Root Mean Squared Error</td>
+                </tr>
+                <tr>
+                    <td>Target Scope</td>
+                    <td>Placed Students</td>
+                    <td>Salary Package &gt; 0 LPA</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; font-size: 13px; margin-top: 14px;">
+            <i class="fa-solid fa-circle-check" style="color: #3b82f6;"></i>
+            <strong>Key Insight:</strong> High CGPA paired with above-average Coding Test Scores and Internship counts are the strongest positive salary multipliers.
+        </div>
+    </div>
+
+    <!-- Card 5: Gradient Descent Regression -->
+    <div class="chart-card model-item" data-category="regression">
+        <span class="model-tag tag-reg">Supervised Regression</span>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; font-size: 20px;">Gradient Descent Regression</h3>
+            <span class="metric-badge purple"><i class="fa-solid fa-bolt"></i> 100 Epochs</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">
+            Batch Gradient Descent optimization implemented from scratch to learn optimal regression parameters via MSE minimization.
+        </p>
+
+        <table class="metrics-table">
+            <thead>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Value</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Learning Rate (α)</td>
+                    <td>0.01</td>
+                    <td>Optimal step size</td>
+                </tr>
+                <tr>
+                    <td>Epochs</td>
+                    <td>100</td>
+                    <td>Full batch iterations</td>
+                </tr>
+                <tr>
+                    <td>Theta 0 (Intercept)</td>
+                    <td>12.56 LPA</td>
+                    <td>Base baseline salary</td>
+                </tr>
+                <tr>
+                    <td>Theta 1 (Slope)</td>
+                    <td>4.60</td>
+                    <td>Weight per std unit of CGPA</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4 style="margin: 16px 0 6px 0; font-size: 14px;">MSE Loss Optimization Curve:</h4>
+        <a href="{{ url_for('static', filename='charts/gradient_descent_loss.png') }}" target="_blank">
+            <img src="{{ url_for('static', filename='charts/gradient_descent_loss.png') }}" alt="Gradient Descent Loss" class="chart-preview-img" title="Click to view full size">
+        </a>
+    </div>
+
+</div>
+
+<script>
+    function filterModels(category, btn) {
+        // Toggle active button class
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Filter cards
+        const items = document.querySelectorAll('.model-item');
+        items.forEach(item => {
+            if (category === 'all' || item.getAttribute('data-category') === category) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+</script>
+{% endblock %}

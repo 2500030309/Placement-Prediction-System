@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+
+{% block title %}
+Student Clustering & Elbow Analysis | Placement Prediction System
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/eda.css') }}">
+<style>
+    .cluster-card {
+        background: var(--card-bg);
+        border: var(--glass-border);
+        border-radius: var(--radius-md);
+        padding: 24px;
+        box-shadow: var(--glass-shadow);
+        transition: transform 0.25s ease;
+        margin-bottom: 24px;
+    }
+    .cluster-pill {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+    .pill-green {
+        background: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .pill-yellow {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .pill-red {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .cluster-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 24px;
+        margin-top: 24px;
+    }
+    .feature-stat-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 14px;
+    }
+    .feature-stat-item:last-child {
+        border-bottom: none;
+    }
+    .table-container {
+        overflow-x: auto;
+        margin: 20px 0;
+    }
+    .wcss-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13.5px;
+    }
+    .wcss-table th, .wcss-table td {
+        padding: 10px 14px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .wcss-table th {
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text-muted);
+    }
+    .wcss-table tr.highlight-k {
+        background: rgba(16, 185, 129, 0.1);
+        font-weight: 600;
+        color: #10b981;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <h1>Unsupervised Learning: Student Segmentation & Elbow Method</h1>
+    <p>Discovering natural student performance cohorts and determining optimal cluster count using K-Means clustering and Within-Cluster Sum of Squares (WCSS).</p>
+</div>
+
+<!-- Key Stats Summary -->
+<section class="stats-grid" style="margin-bottom: 30px;">
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-diagram-project"></i></div>
+        <div class="stat-info">
+            <h3>K = 3 Clusters</h3>
+            <p>Optimal Number of Clusters</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+        <div class="stat-info">
+            <h3>0.3729</h3>
+            <p>Silhouette Score</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-compress"></i></div>
+        <div class="stat-info">
+            <h3>86,421</h3>
+            <p>Within-Cluster Sum of Squares (WCSS)</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+        <div class="stat-info">
+            <h3>40,146</h3>
+            <p>Students Segmented</p>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 1: THE ELBOW METHOD -->
+<div class="cluster-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div>
+            <h2 style="margin: 0; font-size: 22px;"><i class="fa-solid fa-bezier-curve" style="color: #3b82f6; margin-right: 8px;"></i> 1. The Elbow Method for Optimal K</h2>
+            <p style="color: var(--text-muted); margin-top: 6px; font-size: 14px;">
+                The Elbow Method plots WCSS (Inertia) against varying cluster counts (K = 1 to 10). The optimal K is selected at the sharp bend or "elbow", beyond which adding more clusters yields diminishing returns.
+            </p>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 30px; align-items: center; margin-top: 20px;">
+        <div>
+            <a href="{{ url_for('static', filename='charts/kmeans_elbow.png') }}" target="_blank">
+                <img src="{{ url_for('static', filename='charts/kmeans_elbow.png') }}" alt="Elbow Method Curve" style="width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;" title="Click to view full size">
+            </a>
+        </div>
+        <div>
+            <h3 style="font-size: 16px; margin-bottom: 10px;">WCSS Progression Table:</h3>
+            <div class="table-container">
+                <table class="wcss-table">
+                    <thead>
+                        <tr>
+                            <th>Clusters (K)</th>
+                            <th>WCSS (Inertia)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>K = 1</td><td>240,876.00</td><td>Base variance</td></tr>
+                        <tr><td>K = 2</td><td>126,114.02</td><td>47.6% drop</td></tr>
+                        <tr class="highlight-k"><td>K = 3</td><td>86,421.11</td><td>Optimal Elbow Point ★</td></tr>
+                        <tr><td>K = 4</td><td>79,781.03</td><td>Minor drop (7.7%)</td></tr>
+                        <tr><td>K = 5</td><td>74,329.91</td><td>Diminishing gain</td></tr>
+                        <tr><td>K = 6</td><td>69,544.02</td><td>Over-segmentation</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="background: rgba(16, 185, 129, 0.1); border-left: 4px solid #10b981; padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: 13px;">
+                <strong>Verdict:</strong> <strong>K = 3</strong> offers the best trade-off between compact clusters and model simplicity, separating candidates into High Readiness, Moderate Readiness, and Mentorship Required.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION 2: CLUSTER VISUALIZATION -->
+<div class="cluster-card">
+    <h2 style="margin: 0; font-size: 22px;"><i class="fa-solid fa-shapes" style="color: #10b981; margin-right: 8px;"></i> 2. Student Segmentation Visualization</h2>
+    <p style="color: var(--text-muted); margin-top: 6px; font-size: 14px;">
+        2D projection of student performance clusters mapped across <strong>CGPA</strong> and <strong>Coding Test Score</strong>, featuring marked red 'X' cluster centroids.
+    </p>
+
+    <div style="text-align: center; margin: 20px 0;">
+        <a href="{{ url_for('static', filename='charts/kmeans_elbow_clusters.png') }}" target="_blank">
+            <img src="{{ url_for('static', filename='charts/kmeans_elbow_clusters.png') }}" alt="Student Clusters" style="max-width: 850px; width: 100%; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;" title="Click to view full size">
+        </a>
+    </div>
+</div>
+
+<!-- SECTION 3: CLUSTER PROFILES & ACTIONABLE ROADMAP -->
+<h2 style="font-size: 22px; margin: 30px 0 16px 0;"><i class="fa-solid fa-users-viewfinder" style="color: #f59e0b; margin-right: 8px;"></i> 3. Cohort Profiles & Institutional Intervention</h2>
+
+<div class="cluster-grid">
+    <!-- Cohort 1: High -->
+    <div class="cluster-card" style="margin-bottom: 0;">
+        <span class="cluster-pill pill-green"><i class="fa-solid fa-trophy"></i> Cluster 1: High Placement Readiness</span>
+        <p style="font-size: 13.5px; color: var(--text-muted);">Top-tier candidates with strong academic standing, competitive coding skills, and multiple completed internships.</p>
+        
+        <div style="margin: 16px 0;">
+            <div class="feature-stat-item">
+                <span>Average CGPA:</span>
+                <strong>8.62 / 10.0</strong>
+            </div>
+            <div class="feature-stat-item">
+                <span>Avg Coding Test Score:</span>
+                <strong>78.86 / 100</strong>
+            </div>
+            <div class="feature-stat-item">
+                <span>Average Internships:</span>
+                <strong>1.88 Completed</strong>
+            </div>
+            <div class="feature-stat-item">
+                <span>Average Major Projects:</span>
+                <strong>3.31 Projects</strong>
+            </div>
+        </div>
+
+        <div style="background: rgba(16, 185, 129, 0.08); padding: 12px; border-radius: 8px; font-size: 12.5px;">
+            <strong>Recommended Action:</strong> Fast-track for Day-1 Dream companies, high-CTC product roles, and hackathons.
+        </div>
+    </div>
+
+    <!-- Cohort 0: Moderate -->
+    <div class="cluster-card" style="margin-bottom: 0;">
+        <span class="cluster-pill pill-yellow"><i class="fa-solid fa-scale-balanced"></i> Cluster 0: Moderate Readiness</span>
+        <p style="font-size: 13.5px; color: var(--text-muted);">Solid performers meeting typical company eligibility criteria, but requiring extra polish in coding tests and mock interviews.</p>
+        
+        <div style="margin: 16px 0;">
+            <div class="feature-stat-item">
+                <span>Average CGPA:</span>
+                <strong>7.06 / 10.0</strong>
+            </div>
+            <div class="feature-stat-item">
+                <span>Avg Coding Test Score:</span>
+                <strong>55.34 / 100</strong>
+            </div>
+            <div class="feature-stat-item">
+                <span>Average Internships:</span>
+                <strong>0.91 Completed</strong>
+            </div>
+            <div class="feature-stat-item">
+                <span>Average Major Projects:</span>
+                <strong>1.82 Projects</strong>
+            </div>
+        </div>
+
+        <div style="background: rgba(245, 158, 11, 0.08); padding: 12px; border-radius: 8px; font-size: 12.5px;">
+            <strong>Recommended Action:</strong> Focused technical training on Data Structures & Algorithms and resume-building workshops.
+        </div>
+    </div>
+
+    <!-- Cohort 2: Needs Attention -->
+    <div class="cluster-card" style="margin-bottom: 0;">
+        <span class="cluster-pill pill-red"><i class="fa-solid fa-triangle-exclamation"></i> Cluster 2: Priority Mentorship</span>
+        <p style="font-size: 13.5px; color: var(--text-muted);">At-risk students with lower CGPAs, minimal practical projects, and low coding assessment scores requiring urgent intervention.</p>
+        
+        <div style="margin: 16px 0;">
+            <div class="feature-stat-item">
+                <span>Average CGPA:</span>
+                <strong>5.37 / 10.0</strong>
+            </div>
+            <div class="feature-stat-item">
+                <span>Avg Coding Test Score:</span>
+                <strong>26.32 / 100</strong>
+            </div>
+            <div class="feature-stat-item">
+                <span>Average Internships:</span>
+                <strong>0.35 Completed</strong>
+            </div>
+            <div class="feature-stat-item">
+                <span>Average Major Projects:</span>
+                <strong>0.73 Projects</strong>
+            </div>
+        </div>
+
+        <div style="background: rgba(239, 68, 68, 0.08); padding: 12px; border-radius: 8px; font-size: 12.5px;">
+            <strong>Recommended Action:</strong> Remedial academic support, backlog clearance assistance, and fundamental programming bootcamps.
+        </div>
+    </div>
+</div>
+{% endblock %}
